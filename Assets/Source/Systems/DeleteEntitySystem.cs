@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeleteEntitySystem : SystemBase
 {
-    EndSimulationEntityCommandBufferSystem endSimulation_ecbs;
+    private EndSimulationEntityCommandBufferSystem endSimulation_ecbs;
 
     protected override void OnCreate()
     {
