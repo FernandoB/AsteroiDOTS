@@ -9,10 +9,10 @@ public class MoveAsteroidsSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        float deltaTime = Time.DeltaTime;
+        //float deltaTime = Time.DeltaTime;
 
-        Entities.ForEach((ref Translation translation, in Rotation rotation, in AsteroidData asteroid) => {
-                 translation.Value.x += 0.5f * deltaTime;
-        }).Schedule();
+        //Entities.ForEach((ref Translation translation, in Rotation rotation, in AsteroidData asteroid) => {
+        //         translation.Value.x += 0.5f * deltaTime;
+        //}).Schedule();
     }
 }

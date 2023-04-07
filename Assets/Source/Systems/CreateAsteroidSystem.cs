@@ -8,30 +8,30 @@ public class CreateAsteroidSystem : SystemBase
 
     protected override void OnCreate()
     {
-        base.OnCreate();
+        //base.OnCreate();
 
-        beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
+        //beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
     }
 
     protected override void OnUpdate()
     {
-        EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
+        //EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
-        Entities
-            .WithAll<PrefabsEntitiesReferences>()
-            .ForEach((Entity entity, int entityInQueryIndex, ref PrefabsEntitiesReferences prefabs) =>
-            {
-                if(prefabs.asteroidsCounter > 0)
-                {
-                    return;
-                }
+        //Entities
+        //    .WithAll<PrefabsEntitiesReferences>()
+        //    .ForEach((Entity entity, int entityInQueryIndex, ref PrefabsEntitiesReferences prefabs) =>
+        //    {
+        //        if(prefabs.asteroidsCounter > 0)
+        //        {
+        //            return;
+        //        }
 
-                pw.Instantiate(entityInQueryIndex, prefabs.asteroidEntityPrefab);
+        //        pw.Instantiate(entityInQueryIndex, prefabs.asteroidEntityPrefab);
 
-                prefabs.asteroidsCounter++;
-            }
-            ).Schedule();
+        //        prefabs.asteroidsCounter++;
+        //    }
+        //    ).Schedule();
 
-        beginSimulation_ecbs.AddJobHandleForProducer(this.Dependency);
+        //beginSimulation_ecbs.AddJobHandleForProducer(this.Dependency);
     }
 }
