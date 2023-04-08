@@ -17,7 +17,7 @@ public class AsteroidsCreationSystem : SystemBase
             Entity asteroidEntity = EntityManager.Instantiate(entitiesPrefabs.asteroidEntityPrefab);
             AsteroidData asteroidData = EntityManager.GetComponentData<AsteroidData>(asteroidEntity);
             AsteroidReferenceBufferElement element = new AsteroidReferenceBufferElement();
-            element.asteroid = asteroidData;
+            element.asteroid = asteroidEntity;
             buffer = EntityManager.GetBuffer<AsteroidReferenceBufferElement>(poolEntity);
             buffer.Add(element);
         }
