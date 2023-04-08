@@ -12,9 +12,15 @@ public class PrefabsConverter : GameObjectConversionSystem
         Entities.ForEach((PrefabsReferences prefabReference) =>
         {
             Entity entity = GetPrimaryEntity(prefabReference);
-            Entity prefab = GetPrimaryEntity(prefabReference.asteroidPrefab);
+            Entity asteroidPrefab = GetPrimaryEntity(prefabReference.asteroidPrefab);
+            Entity playerPrefab = GetPrimaryEntity(prefabReference.playerPrefab);
 
-            var component = new PrefabsEntitiesReferences { asteroidEntityPrefab = prefab };
+            PrefabsEntitiesReferences component = new PrefabsEntitiesReferences
+            {
+                asteroidEntityPrefab = asteroidPrefab,
+                playerEntityPrefab = playerPrefab
+            };
+
             DstEntityManager.AddComponentData(entity, component);
         });
     }

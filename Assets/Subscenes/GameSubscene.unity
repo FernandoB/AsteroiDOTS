@@ -293,3 +293,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   asteroidPrefab: {fileID: 7225583081646007459, guid: 8228862d22e2b421b8ce9cd91e9b1c4d, type: 3}
+  playerPrefab: {fileID: 821576534560046573, guid: 2a887c6c6a1af4ffcbe74fbba02f3cca, type: 3}

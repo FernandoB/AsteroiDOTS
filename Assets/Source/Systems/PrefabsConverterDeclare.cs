@@ -13,6 +13,7 @@ public class PrefabsConverterDeclare : GameObjectConversionSystem
         Entities.ForEach((PrefabsReferences prefabReference) =>
         {
             DeclareReferencedPrefab(prefabReference.asteroidPrefab);
+            DeclareReferencedPrefab(prefabReference.playerPrefab);
         });
     }
 }
