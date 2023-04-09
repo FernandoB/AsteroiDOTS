@@ -27,8 +27,6 @@ public class PlayerControllerSystem : SystemBase
             vIn = 0f;
         }
 
-        
-
         Entities.ForEach((ref PlayerData player, ref Translation translation, ref Rotation rotation, in LocalToWorld local2World) =>
         {
 
@@ -46,6 +44,6 @@ public class PlayerControllerSystem : SystemBase
 
             translation.Value = translation.Value + player.direction;
 
-        }).Run();
+        }).Schedule();
     }
 }
