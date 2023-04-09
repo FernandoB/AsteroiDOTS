@@ -6,6 +6,7 @@ using Unity.Mathematics;
 [GenerateAuthoringComponent]
 public struct PlayerData : IComponentData
 {
+    public float size;
     public float acceleration;
     public float maxSpeed;
     public float currentSpeed;

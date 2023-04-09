@@ -10,5 +10,7 @@ public struct PrefabsEntitiesReferences : IComponentData
 
     public Entity playerEntityPrefab;
 
+    public Entity bulletEntityPrefab;
+
     public int asteroidsCounter;
 }

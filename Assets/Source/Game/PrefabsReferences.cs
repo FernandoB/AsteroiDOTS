@@ -6,4 +6,5 @@ public class PrefabsReferences : MonoBehaviour
 {
     public GameObject asteroidPrefab;
     public GameObject playerPrefab;
+    public GameObject bulletPrefab;
 }
