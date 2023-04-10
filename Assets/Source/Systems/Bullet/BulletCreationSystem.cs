@@ -56,9 +56,10 @@ public class BulletCreationSystem : SystemBase
             BulletData bulletData = new BulletData();
             bulletData.maxSpeed = bulletMaxSpeed;
             bulletData.startVelocity = math.project(player.direction, local2World.Up);
+            bulletData.direction = local2World.Up;
 
-            pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
             pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
+            pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
             pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
 
         }).Schedule();

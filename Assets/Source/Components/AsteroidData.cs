@@ -5,5 +5,5 @@ using Unity.Entities;
 [GenerateAuthoringComponent]
 public struct AsteroidData : IComponentData
 {
-    public int state;
+    public float maxSpeed;
 }

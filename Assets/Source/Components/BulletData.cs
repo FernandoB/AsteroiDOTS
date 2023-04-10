@@ -8,4 +8,5 @@ public struct BulletData : IComponentData
 {
     public float maxSpeed;
     public float3 startVelocity;
+    public float3 direction;
 }

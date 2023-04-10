@@ -14,7 +14,7 @@ public class BulletMoveSystem : SystemBase
 
         Entities.ForEach((ref Translation translation, in LocalToWorld localToWorld, in BulletData bulletData) =>
         {
-            translation.Value = translation.Value + ((bulletData.startVelocity + (localToWorld.Up * bulletData.maxSpeed)) * deltaTime);
+            translation.Value = translation.Value + ((bulletData.startVelocity + (bulletData.direction * bulletData.maxSpeed)) * deltaTime);
 
         }).ScheduleParallel();
     }
