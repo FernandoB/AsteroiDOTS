@@ -49,22 +49,6 @@ public class AsteroidsCreationSystem : SystemBase
         nRPos = new NativeArray<float2>(amountAsteroids, Allocator.Persistent);
     }
 
-    private static void SetRandomArray_F2X(ref float2[] array, int amount, ref Unity.Mathematics.Random random, float min, float max)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            array[i].x = random.NextFloat(min, max);
-        }
-    }
-
-    private static void SetRandomArray_F2Y(ref float2[] array, int amount, ref Unity.Mathematics.Random random, float min, float max)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            array[i].y = random.NextFloat(min, max);
-        }
-    }
-
     protected override void OnUpdate()
     {
         NativeArray<AsteroidData> asteroids = asteroidsQuery.ToComponentDataArray<AsteroidData>(Allocator.Temp);
@@ -73,8 +57,22 @@ public class AsteroidsCreationSystem : SystemBase
 
         if (amountToInstantiate == 0) return;
 
-        SetRandomArray_F2X(ref rPos, amountToInstantiate, ref random, 6f, 18f);
-        SetRandomArray_F2Y(ref rPos, amountToInstantiate, ref random, -12.5f, 12.5f);
+        bool2 invert = random.NextBool2();
+        float4 bounds = new float4(6f, 18f, 8f, 12.5f);
+
+        for (int i = 0; i < amountToInstantiate; i++)
+        {
+            if (invert.x)
+            {
+                rPos[i].x = random.NextFloat(bounds.x, bounds.y) * (invert.y ? -1f : 1f);
+                rPos[i].y = random.NextFloat(-bounds.w, bounds.w);
+            }
+            else
+            {
+                rPos[i].x = random.NextFloat(-bounds.y, bounds.y);
+                rPos[i].y = random.NextFloat(bounds.z, bounds.w) * (invert.y ? -1f : 1f);
+            }
+        }
 
         nRPos.CopyFrom(rPos);
         NativeArray<float2> tempPos = nRPos;
