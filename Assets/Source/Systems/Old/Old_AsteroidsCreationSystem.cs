@@ -2,7 +2,7 @@
 using Unity.Collections;
 using UnityEngine;
 
-public class AsteroidsCreationSystem : SystemBase
+public class Old_AsteroidsCreationSystem : SystemBase
 {
     protected override void OnStartRunning()
     {

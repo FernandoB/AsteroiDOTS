@@ -2,7 +2,7 @@
 using Unity.Collections;
 using UnityEngine;
 
-public class CreateAsteroidSystem : SystemBase
+public class Old_CreateAsteroidSystem : SystemBase
 {
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 

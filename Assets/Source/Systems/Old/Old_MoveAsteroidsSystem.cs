@@ -5,7 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public class MoveAsteroidsSystem : SystemBase
+public class Old_MoveAsteroidsSystem : SystemBase
 {
     protected override void OnUpdate()
     {

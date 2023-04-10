@@ -6,7 +6,11 @@ using Unity.Mathematics;
 [Serializable]
 public struct PrefabsEntitiesReferences : IComponentData
 {
-    public Entity asteroidEntityPrefab;
+    public Entity asteroidBigEntityPrefab;
+
+    public Entity asteroidMediumEntityPrefab;
+
+    public Entity asteroidSmallEntityPrefab;
 
     public Entity playerEntityPrefab;
 

@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PrefabsReferences : MonoBehaviour
 {
-    public GameObject asteroidPrefab;
+    public GameObject asteroidBigPrefab;
+    public GameObject asteroidMediumPrefab;
+    public GameObject asteroidSmallPrefab;
     public GameObject playerPrefab;
     public GameObject bulletPrefab;
 }

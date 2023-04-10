@@ -12,7 +12,9 @@ public class PrefabsConverterDeclare : GameObjectConversionSystem
     {
         Entities.ForEach((PrefabsReferences prefabReference) =>
         {
-            DeclareReferencedPrefab(prefabReference.asteroidPrefab);
+            DeclareReferencedPrefab(prefabReference.asteroidBigPrefab);
+            DeclareReferencedPrefab(prefabReference.asteroidMediumPrefab);
+            DeclareReferencedPrefab(prefabReference.asteroidSmallPrefab);
             DeclareReferencedPrefab(prefabReference.playerPrefab);
             DeclareReferencedPrefab(prefabReference.bulletPrefab);
         });
