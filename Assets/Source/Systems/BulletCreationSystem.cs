@@ -10,6 +10,8 @@ public class BulletCreationSystem : SystemBase
 {
     private Entity bulletPrefab;
 
+    private BulletData bulletDataPrefab;
+
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
     protected override void OnCreate()
@@ -24,6 +26,8 @@ public class BulletCreationSystem : SystemBase
         PrefabsEntitiesReferences entitiesPrefabs = GetSingleton<PrefabsEntitiesReferences>();
 
         bulletPrefab = entitiesPrefabs.bulletEntityPrefab;
+
+        bulletDataPrefab = GetComponent<BulletData>(bulletPrefab);
     }
 
     protected override void OnUpdate()
@@ -35,6 +39,8 @@ public class BulletCreationSystem : SystemBase
         EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
         Entity prefab = bulletPrefab;
+
+        float bulletMaxSpeed = bulletDataPrefab.maxSpeed;
 
         Entities.ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
         {
@@ -48,14 +54,8 @@ public class BulletCreationSystem : SystemBase
             bulletTranslation.Value = translation.Value + (local2World.Up * player.size);
 
             BulletData bulletData = new BulletData();
+            bulletData.maxSpeed = bulletMaxSpeed;
             bulletData.startVelocity = math.project(player.direction, local2World.Up);
-            float3 playerDirNorm = math.normalize(player.direction);
-            float sign = math.dot(playerDirNorm, local2World.Up);
-            if(sign < 0f) {
-                bulletData.startVelocity *= -1f;
-            }
-
-            //Debug.Log(string.Format(" > startVelocity: {0}", bulletData.startVelocity));
 
             pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
             pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);

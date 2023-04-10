@@ -42,7 +42,7 @@ public class PlayerControllerSystem : SystemBase
                 }
             }
 
-            translation.Value = translation.Value + player.direction;
+            translation.Value = translation.Value + (player.direction * deltaTime);
 
         }).Schedule();
     }
