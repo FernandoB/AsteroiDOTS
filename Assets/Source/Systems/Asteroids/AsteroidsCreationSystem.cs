@@ -18,8 +18,9 @@ public class AsteroidsCreationSystem : SystemBase
 
     private Unity.Mathematics.Random random;
 
-    private float2[] rPos;
     NativeArray<float2> nRPos;
+    NativeArray<float3> rDir;
+    NativeArray<float> rSpeed;
 
     private const int amountAsteroids = 3;
 
@@ -45,8 +46,9 @@ public class AsteroidsCreationSystem : SystemBase
 
         random = new Unity.Mathematics.Random(cur_time);
 
-        rPos = new float2[amountAsteroids];
         nRPos = new NativeArray<float2>(amountAsteroids, Allocator.Persistent);
+        rDir = new NativeArray<float3>(amountAsteroids, Allocator.Persistent);
+        rSpeed = new NativeArray<float>(amountAsteroids, Allocator.Persistent);
     }
 
     protected override void OnUpdate()
@@ -62,26 +64,36 @@ public class AsteroidsCreationSystem : SystemBase
 
         for (int i = 0; i < amountToInstantiate; i++)
         {
+            float2 tempN;
             if (invert.x)
             {
-                rPos[i].x = random.NextFloat(bounds.x, bounds.y) * (invert.y ? -1f : 1f);
-                rPos[i].y = random.NextFloat(-bounds.w, bounds.w);
+                tempN.x = random.NextFloat(bounds.x, bounds.y) * (invert.y ? -1f : 1f);
+                tempN.y = random.NextFloat(-bounds.w, bounds.w);
             }
             else
             {
-                rPos[i].x = random.NextFloat(-bounds.y, bounds.y);
-                rPos[i].y = random.NextFloat(bounds.z, bounds.w) * (invert.y ? -1f : 1f);
+                tempN.x = random.NextFloat(-bounds.y, bounds.y);
+                tempN.y = random.NextFloat(bounds.z, bounds.w) * (invert.y ? -1f : 1f);
             }
+            nRPos[i] = tempN;
         }
 
-        nRPos.CopyFrom(rPos);
+        for (int i = 0; i < amountToInstantiate; i++)
+        {
+            float3 dir = random.NextFloat3Direction();
+            dir.z = 0f;
+            rDir[i] = dir;
+
+            rSpeed[i] = random.NextFloat(2f, 6f);
+        }
+
         NativeArray<float2> tempPos = nRPos;
+        NativeArray<float3> tempDir = rDir;
+        NativeArray<float> tempSpeed = rSpeed;
 
         EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();        
 
         Entity prefab = asteroidPrefab;
-
-        float maxSpeed = asteroidDataPrefab.maxSpeed;
 
         Job.WithCode(() =>
         {
@@ -93,7 +105,12 @@ public class AsteroidsCreationSystem : SystemBase
                 translation.Value.x = tempPos[i].x;
                 translation.Value.y = tempPos[i].y;
 
+                AsteroidData asteroidData = new AsteroidData();
+                asteroidData.direction = tempDir[i];
+                asteroidData.speed = tempSpeed[i];
+
                 ecb.SetComponent(newAsteroid, translation);
+                ecb.SetComponent(newAsteroid, asteroidData);
             }
 
         }).Schedule();
@@ -111,5 +128,7 @@ public class AsteroidsCreationSystem : SystemBase
     protected override void OnStopRunning()
     {
         nRPos.Dispose();
+        rDir.Dispose();
+        rSpeed.Dispose();
     }
 }

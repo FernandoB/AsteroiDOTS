@@ -6,17 +6,17 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public class BulletMoveSystem : SystemBase
+public class AsteroidsMoveSystem : SystemBase
 {
     protected override void OnUpdate()
     {
         float deltaTime = Time.DeltaTime;
 
         Entities
-            .WithAll<BulletData>()
-            .ForEach((ref Translation translation, in BulletData bulletData) =>
+            .WithAll<AsteroidData>()
+            .ForEach((ref Translation translation, in AsteroidData asteroidData) =>
         {
-            translation.Value = translation.Value + ((bulletData.startVelocity + (bulletData.direction * bulletData.maxSpeed)) * deltaTime);
+            translation.Value = translation.Value + (asteroidData.direction * asteroidData.speed * deltaTime);
 
         }).ScheduleParallel();
     }
