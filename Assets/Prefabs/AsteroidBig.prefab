@@ -44,16 +44,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1692318117760432777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58354b05096e743c29dd4acb79fecb8b, type: 3}
+  m_Script: {fileID: 11500000, guid: d3efaa5bd442f455f8aba2737adcffd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entity: {fileID: 0}
   speed: 0
   direction:
     x: 0
     y: 0
     z: 0
-  random:
-    state: 0
 --- !u!135 &1692318117760432791
 SphereCollider:
   m_ObjectHideFlags: 0
