@@ -17,6 +17,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
     private EntityQuery bigBulletHitQuery;
 
     private EntityQuery mediumDisabledQuery;
+    private EntityQuery mediumDivisionQuery;
 
     protected override void OnCreate()
     {
@@ -28,6 +29,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         bigBulletHitQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<BulletHitTag>());
 
         mediumDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<DisabledTag>());
+        mediumDivisionQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<AsteroidDivision>(), ComponentType.ReadOnly<DisabledTag>());
     }
 
     protected override void OnStartRunning()
@@ -48,7 +50,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         };
 
         NativeArray<Entity> mediumDisabledEntities = mediumDisabledQuery.ToEntityArray(Allocator.TempJob);
-        //Debug.Log(" > mediumDisabledEntities.Length: " + mediumDisabledEntities.Length);
+
         UpdateBigBulletHit updateBigBulletHit = new UpdateBigBulletHit()
         {
             PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
@@ -57,8 +59,18 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidsMedium = mediumDisabledEntities
         };
 
+        UpdateMediumDivision updateMediumDivision = new UpdateMediumDivision()
+        {
+            PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
+            AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
+            AsteroidDivisionTypeHandle = GetComponentTypeHandle<AsteroidDivision>(true),
+            commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
+            randomSeed = randomSeed
+        };
+
         Dependency = updateBigDisabled.ScheduleParallel(bigDisabledQuery, Dependency);
         Dependency = updateBigBulletHit.ScheduleParallel(bigBulletHitQuery, Dependency);
+        Dependency = updateMediumDivision.ScheduleParallel(mediumDivisionQuery, Dependency);
 
         mediumDisabledEntities.Dispose(Dependency);
 
@@ -143,14 +155,56 @@ public class AsteroidsUpdateStateSystem : SystemBase
                 commandBuffer.RemoveComponent<BulletHitTag>(i, asteroids[i].entity);
                 commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);
 
-                for (int j = 0; j < 2; j++)
+                if (AsteroidsMedium.Length > 0)
                 {
-                    AsteroidDivision division = new AsteroidDivision();
-                    division.position = divisionPos;
-                    commandBuffer.AddComponent<AsteroidDivision>(i, AsteroidsMedium[mediumCount], division);
-                    mediumCount++;
+                    for (int j = 0; j < 2; j++)
+                    {
+                        AsteroidDivision division = new AsteroidDivision();
+                        division.position = divisionPos;
+                        commandBuffer.AddComponent<AsteroidDivision>(i, AsteroidsMedium[mediumCount], division);
+                        mediumCount++;
+                    }
                 }
             }            
+        }
+    }
+
+    private struct UpdateMediumDivision : IJobChunk
+    {
+        [Unity.Collections.LowLevel.Unsafe.NativeSetThreadIndex]
+        public int threadIndex;
+
+        public ComponentTypeHandle<Translation> PositionTypeHandle;
+        [ReadOnly]
+        public ComponentTypeHandle<AsteroidData> AsteroidTypeHandle;
+        [ReadOnly]
+        public ComponentTypeHandle<AsteroidDivision> AsteroidDivisionTypeHandle;
+        [ReadOnly]
+        public uint randomSeed;
+
+        public EntityCommandBuffer.ParallelWriter commandBuffer;
+
+        public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
+        {
+            NativeArray<AsteroidData> asteroids = chunk.GetNativeArray<AsteroidData>(AsteroidTypeHandle);
+            NativeArray<Translation> positions = chunk.GetNativeArray<Translation>(PositionTypeHandle);
+            NativeArray<AsteroidDivision> divisions = chunk.GetNativeArray<AsteroidDivision>(AsteroidDivisionTypeHandle);
+
+            Unity.Mathematics.Random random = new Unity.Mathematics.Random((uint)((threadIndex + 1) * (chunkIndex + 1) * randomSeed));
+
+            for (int i = 0; i < asteroids.Length; i++)
+            {
+                positions[i] = new Translation() { Value = divisions[i].position };
+                float3 dir = random.NextFloat3Direction();
+                dir.z = 0f;
+                AsteroidData asteroidData = new AsteroidData();
+                asteroidData.direction = dir;
+                asteroidData.speed = random.NextFloat(3f, 7f);
+                asteroidData.entity = asteroids[i].entity;
+                commandBuffer.SetComponent<AsteroidData>(i, asteroids[i].entity, asteroidData);
+                commandBuffer.RemoveComponent<DisabledTag>(i, asteroids[i].entity);
+                commandBuffer.RemoveComponent<AsteroidDivision>(i, asteroids[i].entity);
+            }
         }
     }
 }
