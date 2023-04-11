@@ -46,6 +46,7 @@ public class AsteroidsCreationSystem : SystemBase
                 translation.Value = startPos;
                 asteroidData.entity = e;
                 pw.AddComponent<DisabledTag>(entityInQueryIndex, e);
+                pw.AddComponent<ScoreCounterData>(entityInQueryIndex, e, new ScoreCounterData() { scoreCount = 0 });
 
             }).ScheduleParallel();
 

@@ -68,6 +68,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         UpdateBulletHit updateBigBulletHit = new UpdateBulletHit()
         {
             PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
+            ScoreCounterHandle = GetComponentTypeHandle<ScoreCounterData>(false),
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
             Asteroids = mediumDisabledEntities,
@@ -88,6 +89,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         UpdateBulletHit updateMediumBulletHit = new UpdateBulletHit()
         {
             PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
+            ScoreCounterHandle = GetComponentTypeHandle<ScoreCounterData>(false),
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
             Asteroids = smallDisabledEntities,
@@ -108,6 +110,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         UpdateBulletHit updateSmallBulletHit = new UpdateBulletHit()
         {
             PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
+            ScoreCounterHandle = GetComponentTypeHandle<ScoreCounterData>(false),
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
             Asteroids = noEntities,
@@ -183,6 +186,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
     private struct UpdateBulletHit : IJobChunk
     {
         public ComponentTypeHandle<Translation> PositionTypeHandle;
+        public ComponentTypeHandle<ScoreCounterData> ScoreCounterHandle;
         [ReadOnly]
         public ComponentTypeHandle<AsteroidData> AsteroidTypeHandle;
 
@@ -197,6 +201,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         {
             NativeArray<AsteroidData> asteroids = chunk.GetNativeArray<AsteroidData>(AsteroidTypeHandle);
             NativeArray<Translation> positions = chunk.GetNativeArray<Translation>(PositionTypeHandle);
+            NativeArray<ScoreCounterData> scores = chunk.GetNativeArray<ScoreCounterData>(ScoreCounterHandle);
 
             int count = 0;
             int amount = (Asteroids.Length > amountDivision) ? amountDivision : Asteroids.Length;
@@ -206,6 +211,9 @@ public class AsteroidsUpdateStateSystem : SystemBase
                 float3 divisionPos = positions[i].Value;
 
                 positions[i] = new Translation() { Value = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld) };
+
+                scores[i] = new ScoreCounterData() { scoreCount = scores[i].scoreCount + 1 };
+
                 commandBuffer.RemoveComponent<BulletHitTag>(i, asteroids[i].entity);
                 commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);
 
