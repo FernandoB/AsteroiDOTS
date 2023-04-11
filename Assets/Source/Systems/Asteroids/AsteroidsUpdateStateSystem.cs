@@ -16,6 +16,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
     private EntityQuery bigDisabledQuery;
     private EntityQuery bigBulletHitQuery;
 
+    private EntityQuery mediumDisabledQuery;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -24,6 +26,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
         bigDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<DisabledTag>());
         bigBulletHitQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<BulletHitTag>());
+
+        mediumDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<DisabledTag>());
     }
 
     protected override void OnStartRunning()
@@ -43,15 +47,20 @@ public class AsteroidsUpdateStateSystem : SystemBase
             randomSeed = randomSeed
         };
 
+        NativeArray<Entity> mediumDisabledEntities = mediumDisabledQuery.ToEntityArray(Allocator.TempJob);
+        //Debug.Log(" > mediumDisabledEntities.Length: " + mediumDisabledEntities.Length);
         UpdateBigBulletHit updateBigBulletHit = new UpdateBigBulletHit()
         {
             PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
-            commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter()
+            commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
+            AsteroidsMedium = mediumDisabledEntities
         };
 
         Dependency = updateBigDisabled.ScheduleParallel(bigDisabledQuery, Dependency);
         Dependency = updateBigBulletHit.ScheduleParallel(bigBulletHitQuery, Dependency);
+
+        mediumDisabledEntities.Dispose(Dependency);
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
@@ -116,17 +125,32 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
         public EntityCommandBuffer.ParallelWriter commandBuffer;
 
+        [NativeDisableParallelForRestriction]
+        public NativeArray<Entity> AsteroidsMedium;
+
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             NativeArray<AsteroidData> asteroids = chunk.GetNativeArray<AsteroidData>(AsteroidTypeHandle);
             NativeArray<Translation> positions = chunk.GetNativeArray<Translation>(PositionTypeHandle);
 
+            int mediumCount = 0;
+            
             for (int i = 0; i < asteroids.Length; i++)
             {
+                float3 divisionPos = positions[i].Value;
+
                 positions[i] = new Translation() { Value = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld) };
                 commandBuffer.RemoveComponent<BulletHitTag>(i, asteroids[i].entity);
                 commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);
-            }
+
+                for (int j = 0; j < 2; j++)
+                {
+                    AsteroidDivision division = new AsteroidDivision();
+                    division.position = divisionPos;
+                    commandBuffer.AddComponent<AsteroidDivision>(i, AsteroidsMedium[mediumCount], division);
+                    mediumCount++;
+                }
+            }            
         }
     }
 }
