@@ -8,21 +8,17 @@ using UnityEngine;
 
 public class AsteroidsCreationSystem : SystemBase
 {
-    private Entity asteroidPrefab;
+    private NativeArray<Entity> asteroidsBig;
+    private NativeArray<Entity> asteroidsMedium;
+    private NativeArray<Entity> asteroidsSmall;
 
-    private AsteroidData asteroidDataPrefab;
+    private const int maxBigAsteroids = 3;
 
-    private EntityQuery asteroidsQuery;
+    private const float outOfThisWorld = 30f;
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
-    private Unity.Mathematics.Random random;
-
-    NativeArray<float2> nRPos;
-    NativeArray<float3> rDir;
-    NativeArray<float> rSpeed;
-
-    private const int amountAsteroids = 3;
+    private float counter = 1f;
 
     protected override void OnCreate()
     {
@@ -35,89 +31,53 @@ public class AsteroidsCreationSystem : SystemBase
     {
         PrefabsEntitiesReferences entitiesPrefabs = GetSingleton<PrefabsEntitiesReferences>();
 
-        asteroidPrefab = entitiesPrefabs.asteroidBigEntityPrefab;
+        asteroidsBig = EntityManager.Instantiate(entitiesPrefabs.asteroidBigEntityPrefab, maxBigAsteroids, Allocator.Persistent);
+        asteroidsMedium = EntityManager.Instantiate(entitiesPrefabs.asteroidMediumEntityPrefab, maxBigAsteroids * 2, Allocator.Persistent);
+        asteroidsSmall = EntityManager.Instantiate(entitiesPrefabs.asteroidSmallEntityPrefab, maxBigAsteroids * 2 * 2, Allocator.Persistent);
 
-        asteroidDataPrefab = GetComponent<AsteroidData>(asteroidPrefab);
+        float3 startPos = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld);
 
-        asteroidsQuery = GetEntityQuery(typeof(AsteroidData));
+        EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
-        System.DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
-        uint cur_time = (uint)(System.DateTime.UtcNow - epochStart).TotalSeconds;
+        Entities
+            .WithAll<AsteroidData>()
+            .ForEach((Entity e, int entityInQueryIndex, ref Translation translation, ref AsteroidData asteroidData) =>
+            {
+                asteroidData.random = Unity.Mathematics.Random.CreateFromIndex((uint)entityInQueryIndex);
+                translation.Value = startPos;
+                pw.AddComponent<DisabledTag>(entityInQueryIndex, e);
 
-        random = new Unity.Mathematics.Random(cur_time);
+            }).ScheduleParallel();
 
-        nRPos = new NativeArray<float2>(amountAsteroids, Allocator.Persistent);
-        rDir = new NativeArray<float3>(amountAsteroids, Allocator.Persistent);
-        rSpeed = new NativeArray<float>(amountAsteroids, Allocator.Persistent);
+        beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
+    }
+
+    private static float3 GetRandomPosArea(ref Unity.Mathematics.Random randon, float minX, float maxX, float minY, float maxY)
+    {
+        return new float3(  randon.NextFloat(minX, maxX) * (randon.NextBool() ? -1f : 1f),
+                            randon.NextFloat(minY, maxY) * (randon.NextBool() ? -1f : 1f),
+                            0f);
     }
 
     protected override void OnUpdate()
     {
-        NativeArray<AsteroidData> asteroids = asteroidsQuery.ToComponentDataArray<AsteroidData>(Allocator.Temp);
+        //counter -= Time.DeltaTime;
+        //if (counter > 0f) return;
+        //counter = 1f;
 
-        int amountToInstantiate = amountAsteroids - asteroids.Length;
+        //EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
-        if (amountToInstantiate == 0) return;
+        //Entities
+        //    .WithAll<AsteroidData>()
+        //    .ForEach((Entity e, int entityInQueryIndex, ref Translation translation, ref AsteroidData asteroidData) =>
+        //    {
+        //        Translation tr = new Translation();
+        //        tr.Value = GetRandomPosArea(ref asteroidData.random, 6f, 18f, 8, 12.5f);
+        //        pw.SetComponent<Translation>(entityInQueryIndex, e, tr);
 
-        bool2 invert = random.NextBool2();
-        float4 bounds = new float4(6f, 18f, 8f, 12.5f);
+        //    }).ScheduleParallel();
 
-        for (int i = 0; i < amountToInstantiate; i++)
-        {
-            float2 tempN;
-            if (invert.x)
-            {
-                tempN.x = random.NextFloat(bounds.x, bounds.y) * (invert.y ? -1f : 1f);
-                tempN.y = random.NextFloat(-bounds.w, bounds.w);
-            }
-            else
-            {
-                tempN.x = random.NextFloat(-bounds.y, bounds.y);
-                tempN.y = random.NextFloat(bounds.z, bounds.w) * (invert.y ? -1f : 1f);
-            }
-            nRPos[i] = tempN;
-        }
-
-        for (int i = 0; i < amountToInstantiate; i++)
-        {
-            float3 dir = random.NextFloat3Direction();
-            dir.z = 0f;
-            rDir[i] = dir;
-
-            rSpeed[i] = random.NextFloat(2f, 6f);
-        }
-
-        NativeArray<float2> tempPos = nRPos;
-        NativeArray<float3> tempDir = rDir;
-        NativeArray<float> tempSpeed = rSpeed;
-
-        EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();        
-
-        Entity prefab = asteroidPrefab;
-
-        Job.WithCode(() =>
-        {
-            for (int i = 0; i < amountToInstantiate; i++)
-            {
-                Entity newAsteroid = ecb.Instantiate(prefab);                
-
-                Translation translation = new Translation();
-                translation.Value.x = tempPos[i].x;
-                translation.Value.y = tempPos[i].y;
-
-                AsteroidData asteroidData = new AsteroidData();
-                asteroidData.direction = tempDir[i];
-                asteroidData.speed = tempSpeed[i];
-
-                ecb.SetComponent(newAsteroid, translation);
-                ecb.SetComponent(newAsteroid, asteroidData);
-            }
-
-        }).Schedule();
-
-        asteroids.Dispose();
-
-        beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
+        //beginSimulation_ecbs.AddJobHandleForProducer(this.Dependency);
     }
 
     protected override void OnDestroy()
@@ -127,8 +87,8 @@ public class AsteroidsCreationSystem : SystemBase
 
     protected override void OnStopRunning()
     {
-        nRPos.Dispose();
-        rDir.Dispose();
-        rSpeed.Dispose();
+        asteroidsBig.Dispose();
+        asteroidsMedium.Dispose();
+        asteroidsSmall.Dispose();
     }
 }

@@ -35,7 +35,9 @@ public class WorldBoundsSystem : SystemBase
         float2 minMaxX = new float2(camP.x - (worldWidth / 2f) - offset, camP.x + (worldWidth / 2f) + offset);
         float2 minMaxY = new float2(camP.y - (worldHeight / 2f) - offset, camP.y + (worldHeight / 2f) + offset);
 
-        Entities.ForEach((ref Translation translation) =>
+        Entities
+            .WithNone<DisabledTag>()
+            .ForEach((ref Translation translation) =>
         {
             float3 pos = translation.Value;
 

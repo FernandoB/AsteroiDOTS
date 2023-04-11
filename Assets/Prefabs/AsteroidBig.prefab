@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1692318117760432790}
   - component: {fileID: 1692318117760432791}
   - component: {fileID: 1692318117760432789}
+  - component: {fileID: 6106638790570321126}
   m_Layer: 0
   m_Name: AsteroidBig
   m_TagString: Untagged
@@ -46,7 +47,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58354b05096e743c29dd4acb79fecb8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  speed: 0
+  direction:
+    x: 0
+    y: 0
+    z: 0
+  random:
+    state: 0
 --- !u!135 &1692318117760432791
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -76,6 +83,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6106638790570321126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692318117760432777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5800e34e6fdc34721b9e13dda412975c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1692318118104151993
 GameObject:
   m_ObjectHideFlags: 0
