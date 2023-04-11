@@ -137,7 +137,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
         public EntityCommandBuffer.ParallelWriter commandBuffer;
 
-        [NativeDisableParallelForRestriction]
+        [ReadOnly]
         public NativeArray<Entity> AsteroidsMedium;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
