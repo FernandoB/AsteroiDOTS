@@ -17,7 +17,11 @@ public class AsteroidsUpdateStateSystem : SystemBase
     private EntityQuery bigBulletHitQuery;
 
     private EntityQuery mediumDisabledQuery;
+
     private EntityQuery mediumDivisionQuery;
+    private EntityQuery mediumBulletHitQuery;
+
+    private EntityQuery smallDisabledQuery;
 
     protected override void OnCreate()
     {
@@ -29,7 +33,11 @@ public class AsteroidsUpdateStateSystem : SystemBase
         bigBulletHitQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<BulletHitTag>());
 
         mediumDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<DisabledTag>());
+
         mediumDivisionQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<AsteroidDivision>(), ComponentType.ReadOnly<DisabledTag>());
+        mediumBulletHitQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<BulletHitTag>());
+
+        smallDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidSmallTag>(), ComponentType.ReadOnly<DisabledTag>());
     }
 
     protected override void OnStartRunning()
@@ -68,11 +76,23 @@ public class AsteroidsUpdateStateSystem : SystemBase
             randomSeed = randomSeed
         };
 
+        NativeArray<Entity> smallDisabledEntities = smallDisabledQuery.ToEntityArray(Allocator.TempJob);        
+
+        UpdateMediumBulletHit updateMediumBulletHit = new UpdateMediumBulletHit()
+        {
+            PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
+            AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
+            commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
+            AsteroidsSmall = smallDisabledEntities
+        };
+
         Dependency = updateBigDisabled.ScheduleParallel(bigDisabledQuery, Dependency);
         Dependency = updateBigBulletHit.ScheduleParallel(bigBulletHitQuery, Dependency);
         Dependency = updateMediumDivision.ScheduleParallel(mediumDivisionQuery, Dependency);
+        Dependency = updateMediumBulletHit.ScheduleParallel(mediumBulletHitQuery, Dependency);
 
-        mediumDisabledEntities.Dispose(Dependency);
+        Dependency = mediumDisabledEntities.Dispose(Dependency);
+        smallDisabledEntities.Dispose(Dependency);
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
@@ -140,13 +160,16 @@ public class AsteroidsUpdateStateSystem : SystemBase
         [ReadOnly]
         public NativeArray<Entity> AsteroidsMedium;
 
+        private const int amountDivision = 2;
+
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             NativeArray<AsteroidData> asteroids = chunk.GetNativeArray<AsteroidData>(AsteroidTypeHandle);
             NativeArray<Translation> positions = chunk.GetNativeArray<Translation>(PositionTypeHandle);
 
-            int mediumCount = 0;
-            
+            int count = 0;
+            int amount = (AsteroidsMedium.Length > amountDivision) ? amountDivision : AsteroidsMedium.Length;
+
             for (int i = 0; i < asteroids.Length; i++)
             {
                 float3 divisionPos = positions[i].Value;
@@ -155,15 +178,14 @@ public class AsteroidsUpdateStateSystem : SystemBase
                 commandBuffer.RemoveComponent<BulletHitTag>(i, asteroids[i].entity);
                 commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);
 
-                if (AsteroidsMedium.Length > 0)
+                for (int j = 0; j < amountDivision; j++)
                 {
-                    for (int j = 0; j < 2; j++)
-                    {
-                        AsteroidDivision division = new AsteroidDivision();
-                        division.position = divisionPos;
-                        commandBuffer.AddComponent<AsteroidDivision>(i, AsteroidsMedium[mediumCount], division);
-                        mediumCount++;
-                    }
+                    if (count >= amount) break;
+
+                    AsteroidDivision division = new AsteroidDivision();
+                    division.position = divisionPos;
+                    commandBuffer.AddComponent<AsteroidDivision>(i, AsteroidsMedium[count], division);
+                    count++;
                 }
             }            
         }
@@ -204,6 +226,48 @@ public class AsteroidsUpdateStateSystem : SystemBase
                 commandBuffer.SetComponent<AsteroidData>(i, asteroids[i].entity, asteroidData);
                 commandBuffer.RemoveComponent<DisabledTag>(i, asteroids[i].entity);
                 commandBuffer.RemoveComponent<AsteroidDivision>(i, asteroids[i].entity);
+            }
+        }
+    }
+
+    private struct UpdateMediumBulletHit : IJobChunk
+    {
+        public ComponentTypeHandle<Translation> PositionTypeHandle;
+        [ReadOnly]
+        public ComponentTypeHandle<AsteroidData> AsteroidTypeHandle;
+
+        public EntityCommandBuffer.ParallelWriter commandBuffer;
+
+        [ReadOnly]
+        public NativeArray<Entity> AsteroidsSmall;
+
+        private const int amountDivision = 2;
+
+        public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
+        {
+            NativeArray<AsteroidData> asteroids = chunk.GetNativeArray<AsteroidData>(AsteroidTypeHandle);
+            NativeArray<Translation> positions = chunk.GetNativeArray<Translation>(PositionTypeHandle);
+
+            int count = 0;
+            int amount = (AsteroidsSmall.Length > amountDivision) ? amountDivision : AsteroidsSmall.Length;
+
+            for (int i = 0; i < asteroids.Length; i++)
+            {
+                float3 divisionPos = positions[i].Value;
+
+                positions[i] = new Translation() { Value = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld) };
+                commandBuffer.RemoveComponent<BulletHitTag>(i, asteroids[i].entity);
+                commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);
+
+                for (int j = 0; j < amountDivision; j++)
+                {
+                    if (count >= amount) break;
+
+                    AsteroidDivision division = new AsteroidDivision();
+                    division.position = divisionPos;
+                    commandBuffer.AddComponent<AsteroidDivision>(i, AsteroidsSmall[count], division);
+                    count++;
+                }
             }
         }
     }
