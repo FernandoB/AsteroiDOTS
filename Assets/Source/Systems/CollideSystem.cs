@@ -28,6 +28,7 @@ public class CollideSystem : SystemBase
             asteroidsData = GetComponentDataFromEntity<AsteroidData>(),
             bulletsData = GetComponentDataFromEntity<BulletData>(),
             entitiesToDelete = GetComponentDataFromEntity<DeleteTag>(),
+            entitiesToBulletHit = GetComponentDataFromEntity<BulletHitTag>(),
             commandBuffer = endSimulation_ecbs.CreateCommandBuffer()
             };
 
@@ -37,9 +38,10 @@ public class CollideSystem : SystemBase
 
     private struct TriggerJob : ITriggerEventsJob
     {
-        public ComponentDataFromEntity<AsteroidData> asteroidsData;
-        public ComponentDataFromEntity<BulletData> bulletsData;
+        [ReadOnly] public ComponentDataFromEntity<AsteroidData> asteroidsData;
+        [ReadOnly] public ComponentDataFromEntity<BulletData> bulletsData;
         [ReadOnly] public ComponentDataFromEntity<DeleteTag> entitiesToDelete;
+        [ReadOnly] public ComponentDataFromEntity<BulletHitTag> entitiesToBulletHit;
         public EntityCommandBuffer commandBuffer;
 
         public void Execute(TriggerEvent triggerEvent)
@@ -53,9 +55,9 @@ public class CollideSystem : SystemBase
             if(asteroidsData.HasComponent(entityA)
                 && bulletsData.HasComponent(entityB))
             {
-                if( ! entitiesToDelete.HasComponent(entityA))
+                if( ! entitiesToBulletHit.HasComponent(entityA))
                 {
-                    commandBuffer.AddComponent<DeleteTag>(entityA);
+                    commandBuffer.AddComponent<BulletHitTag>(entityA);
                 }
                 if( ! entitiesToDelete.HasComponent(entityB))
                 {

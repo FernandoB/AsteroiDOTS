@@ -45,6 +45,7 @@ public class AsteroidsCreationSystem : SystemBase
             {
                 asteroidData.random = Unity.Mathematics.Random.CreateFromIndex((uint)entityInQueryIndex);
                 translation.Value = startPos;
+                asteroidData.entity = e;
                 pw.AddComponent<DisabledTag>(entityInQueryIndex, e);
 
             }).ScheduleParallel();
@@ -52,32 +53,9 @@ public class AsteroidsCreationSystem : SystemBase
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
 
-    private static float3 GetRandomPosArea(ref Unity.Mathematics.Random randon, float minX, float maxX, float minY, float maxY)
-    {
-        return new float3(  randon.NextFloat(minX, maxX) * (randon.NextBool() ? -1f : 1f),
-                            randon.NextFloat(minY, maxY) * (randon.NextBool() ? -1f : 1f),
-                            0f);
-    }
-
     protected override void OnUpdate()
     {
-        //counter -= Time.DeltaTime;
-        //if (counter > 0f) return;
-        //counter = 1f;
 
-        //EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
-
-        //Entities
-        //    .WithAll<AsteroidData>()
-        //    .ForEach((Entity e, int entityInQueryIndex, ref Translation translation, ref AsteroidData asteroidData) =>
-        //    {
-        //        Translation tr = new Translation();
-        //        tr.Value = GetRandomPosArea(ref asteroidData.random, 6f, 18f, 8, 12.5f);
-        //        pw.SetComponent<Translation>(entityInQueryIndex, e, tr);
-
-        //    }).ScheduleParallel();
-
-        //beginSimulation_ecbs.AddJobHandleForProducer(this.Dependency);
     }
 
     protected override void OnDestroy()

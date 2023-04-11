@@ -6,6 +6,7 @@ using Unity.Mathematics;
 [GenerateAuthoringComponent]
 public struct AsteroidData : IComponentData
 {
+    public Entity entity;
     public float speed;
     public float3 direction;
     public Unity.Mathematics.Random random;
