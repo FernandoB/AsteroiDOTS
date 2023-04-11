@@ -13,7 +13,7 @@ public class AsteroidsMoveSystem : SystemBase
         float deltaTime = Time.DeltaTime;
 
         Entities
-            .WithAll<AsteroidData>()
+            .WithNone<DisabledTag>()
             .ForEach((ref Translation translation, in AsteroidData asteroidData) =>
         {
             translation.Value = translation.Value + (asteroidData.direction * asteroidData.speed * deltaTime);

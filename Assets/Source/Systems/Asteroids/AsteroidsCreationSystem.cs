@@ -43,7 +43,6 @@ public class AsteroidsCreationSystem : SystemBase
             .WithAll<AsteroidData>()
             .ForEach((Entity e, int entityInQueryIndex, ref Translation translation, ref AsteroidData asteroidData) =>
             {
-                asteroidData.random = Unity.Mathematics.Random.CreateFromIndex((uint)entityInQueryIndex);
                 translation.Value = startPos;
                 asteroidData.entity = e;
                 pw.AddComponent<DisabledTag>(entityInQueryIndex, e);
