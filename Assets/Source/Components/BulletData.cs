@@ -6,6 +6,7 @@ using Unity.Mathematics;
 [GenerateAuthoringComponent]
 public struct BulletData : IComponentData
 {
+    public float lifeTime;
     public float maxSpeed;
     public float3 startVelocity;
     public float3 direction;

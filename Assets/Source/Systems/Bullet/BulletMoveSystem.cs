@@ -8,16 +8,35 @@ using UnityEngine;
 
 public class BulletMoveSystem : SystemBase
 {
+    private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
+    }
+
     protected override void OnUpdate()
     {
         float deltaTime = Time.DeltaTime;
 
+        EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
+
         Entities
             .WithAll<BulletData>()
-            .ForEach((ref Translation translation, in BulletData bulletData) =>
+            .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref BulletData bulletData) =>
         {
             translation.Value = translation.Value + ((bulletData.startVelocity + (bulletData.direction * bulletData.maxSpeed)) * deltaTime);
 
+            bulletData.lifeTime -= deltaTime;
+            if(bulletData.lifeTime < 0f)
+            {
+                pw.AddComponent<DeleteTag>(entityInQueryIndex, entity);
+            }
+
         }).ScheduleParallel();
+
+        beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
 }

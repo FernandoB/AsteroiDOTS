@@ -14,11 +14,15 @@ public class BulletCreationSystem : SystemBase
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
+    private EntityQuery bulletsQuery;
+
     protected override void OnCreate()
     {
         base.OnCreate();
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
+
+        bulletsQuery = GetEntityQuery(ComponentType.ReadOnly<BulletData>());
     }
 
     protected override void OnStartRunning()
@@ -36,11 +40,15 @@ public class BulletCreationSystem : SystemBase
         fire = Input.GetKeyDown(KeyCode.Space);
         if (!fire) return;
 
+        int count = bulletsQuery.CalculateEntityCount();
+        if (count == 4) return;
+
         EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
         Entity prefab = bulletPrefab;
 
         float bulletMaxSpeed = bulletDataPrefab.maxSpeed;
+        float lifeTime = bulletDataPrefab.lifeTime;
 
         Entities.ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
         {
@@ -55,6 +63,7 @@ public class BulletCreationSystem : SystemBase
 
             BulletData bulletData = new BulletData();
             bulletData.maxSpeed = bulletMaxSpeed;
+            bulletData.lifeTime = lifeTime;
             bulletData.startVelocity = math.project(player.direction, local2World.Up);
             bulletData.direction = local2World.Up;
 
