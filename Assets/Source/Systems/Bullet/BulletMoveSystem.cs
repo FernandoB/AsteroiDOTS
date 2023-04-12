@@ -14,6 +14,8 @@ public class BulletMoveSystem : SystemBase
     {
         base.OnCreate();
 
+        RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
+
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
     }
 

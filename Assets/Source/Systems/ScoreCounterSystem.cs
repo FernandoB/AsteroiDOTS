@@ -25,7 +25,7 @@ public class ScoreCounterSystem : SystemBase
             scoreAcum += scores[i].scoreCount;
         }
 
-        Debug.Log("score: " + scoreAcum);
+        //Debug.Log("score: " + scoreAcum);
 
         scores.Dispose();
     }

@@ -31,6 +31,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
     protected override void OnCreate()
     {
         base.OnCreate();
+        
+        RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 

@@ -8,6 +8,13 @@ using UnityEngine;
 
 public class PlayerControllerSystem : SystemBase
 {
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
+    }
+
     protected override void OnUpdate()
     {
         float deltaTime = Time.DeltaTime;

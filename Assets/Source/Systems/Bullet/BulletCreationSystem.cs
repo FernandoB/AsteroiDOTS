@@ -20,6 +20,8 @@ public class BulletCreationSystem : SystemBase
     {
         base.OnCreate();
 
+        RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
+
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 
         bulletsQuery = GetEntityQuery(ComponentType.ReadOnly<BulletData>());

@@ -8,9 +8,9 @@ using UnityEngine;
 
 public class AsteroidsCreationSystem : SystemBase
 {
-    private NativeArray<Entity> asteroidsBig;
-    private NativeArray<Entity> asteroidsMedium;
-    private NativeArray<Entity> asteroidsSmall;
+    //private NativeArray<Entity> asteroidsBig;
+    //private NativeArray<Entity> asteroidsMedium;
+    //private NativeArray<Entity> asteroidsSmall;
 
     private const int maxBigAsteroids = 5;
 
@@ -25,37 +25,49 @@ public class AsteroidsCreationSystem : SystemBase
         base.OnCreate();
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
+
+        RequireForUpdate(GetEntityQuery(typeof(GameStateStart)));
     }
 
     protected override void OnStartRunning()
     {
-        PrefabsEntitiesReferences entitiesPrefabs = GetSingleton<PrefabsEntitiesReferences>();
-
-        asteroidsBig = EntityManager.Instantiate(entitiesPrefabs.asteroidBigEntityPrefab, maxBigAsteroids, Allocator.Persistent);
-        asteroidsMedium = EntityManager.Instantiate(entitiesPrefabs.asteroidMediumEntityPrefab, maxBigAsteroids * 2, Allocator.Persistent);
-        asteroidsSmall = EntityManager.Instantiate(entitiesPrefabs.asteroidSmallEntityPrefab, maxBigAsteroids * 2 * 2, Allocator.Persistent);
-
-        float3 startPos = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld);
-
-        EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
-
-        Entities
-            .WithAll<AsteroidData>()
-            .ForEach((Entity e, int entityInQueryIndex, ref Translation translation, ref AsteroidData asteroidData) =>
-            {
-                translation.Value = startPos;
-                asteroidData.entity = e;
-                pw.AddComponent<DisabledTag>(entityInQueryIndex, e);
-                pw.AddComponent<ScoreCounterData>(entityInQueryIndex, e, new ScoreCounterData() { scoreCount = 0 });
-
-            }).ScheduleParallel();
-
-        beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
+        
     }
 
     protected override void OnUpdate()
     {
+        PrefabsEntitiesReferences entitiesPrefabs = GetSingleton<PrefabsEntitiesReferences>();
 
+        EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();
+
+        float3 startPos = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld);
+
+        for (int i = 0; i < maxBigAsteroids; i++)
+        {
+            Entity e = ecb.Instantiate(entitiesPrefabs.asteroidBigEntityPrefab);
+            ecb.SetComponent<Translation>(e, new Translation() { Value = startPos } );
+            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
+            ecb.AddComponent<DisabledTag>(e);
+            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 });
+        }
+
+        for (int i = 0; i < maxBigAsteroids * 2; i++)
+        {
+            Entity e = ecb.Instantiate(entitiesPrefabs.asteroidMediumEntityPrefab);
+            ecb.SetComponent<Translation>(e, new Translation() { Value = startPos });
+            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
+            ecb.AddComponent<DisabledTag>(e);
+            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 });
+        }
+
+        for (int i = 0; i < maxBigAsteroids * 2 * 2; i++)
+        {
+            Entity e = ecb.Instantiate(entitiesPrefabs.asteroidSmallEntityPrefab);
+            ecb.SetComponent<Translation>(e, new Translation() { Value = startPos });
+            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
+            ecb.AddComponent<DisabledTag>(e);
+            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 });
+        }
     }
 
     protected override void OnDestroy()
@@ -65,8 +77,6 @@ public class AsteroidsCreationSystem : SystemBase
 
     protected override void OnStopRunning()
     {
-        asteroidsBig.Dispose();
-        asteroidsMedium.Dispose();
-        asteroidsSmall.Dispose();
+
     }
 }
