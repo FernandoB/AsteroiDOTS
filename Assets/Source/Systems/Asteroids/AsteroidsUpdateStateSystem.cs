@@ -13,7 +13,9 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
-    private EntityQuery bigDisabledQuery;
+    private EntityQuery bigDisabledNoneDestroyedQuery;
+    private EntityQuery bigEnabledQuery;
+
     private EntityQuery bigBulletHitQuery;
 
     private EntityQuery mediumDisabledQuery;
@@ -32,7 +34,20 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 
-        bigDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<DisabledTag>());
+        EntityQueryDesc bigDisabledNoneDestroyedDesc = new EntityQueryDesc
+        {
+            None = new ComponentType[] { ComponentType.ReadOnly<DestroyedTag>() },
+            All = new ComponentType[] { typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<DisabledTag>() }
+        };
+        bigDisabledNoneDestroyedQuery = GetEntityQuery(bigDisabledNoneDestroyedDesc);
+
+        EntityQueryDesc bigEnabledDesc = new EntityQueryDesc
+        {
+            None = new ComponentType[] { ComponentType.ReadOnly<DestroyedTag>(), ComponentType.ReadOnly<DisabledTag>() },
+            All = new ComponentType[] { ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>() }
+        };
+        bigEnabledQuery = GetEntityQuery(bigEnabledDesc);
+
         bigBulletHitQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidBigTag>(), ComponentType.ReadOnly<BulletHitTag>());
 
         mediumDisabledQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidMediumTag>(), ComponentType.ReadOnly<DisabledTag>());
@@ -55,11 +70,14 @@ public class AsteroidsUpdateStateSystem : SystemBase
     {
         uint randomSeed = (uint)(float)(baseTime + Time.ElapsedTime * 100);
 
+        NativeArray<Entity> bigEnabledEntities = bigEnabledQuery.ToEntityArray(Allocator.TempJob);
+
         UpdateBigDisabled updateBigDisabled = new UpdateBigDisabled()
         {
             PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter(),
+            EnabledBigAsteroids = bigEnabledEntities,
             randomSeed = randomSeed
         };
 
@@ -117,13 +135,14 @@ public class AsteroidsUpdateStateSystem : SystemBase
             amountDivision = 0
         };
 
-        Dependency = updateBigDisabled.ScheduleParallel(bigDisabledQuery, Dependency);
+        Dependency = updateBigDisabled.ScheduleParallel(bigDisabledNoneDestroyedQuery, Dependency);
         Dependency = updateBigBulletHit.ScheduleParallel(bigBulletHitQuery, Dependency);
         Dependency = updateMediumDivision.ScheduleParallel(mediumDivisionQuery, Dependency);
         Dependency = updateMediumBulletHit.ScheduleParallel(mediumBulletHitQuery, Dependency);
         Dependency = updateSmallDivision.ScheduleParallel(smallDivisionQuery, Dependency);
         Dependency = updateSmallBulletHit.ScheduleParallel(smallBulletHitQuery, Dependency);
 
+        Dependency = bigEnabledEntities.Dispose(Dependency);
         Dependency = mediumDisabledEntities.Dispose(Dependency);
         Dependency = smallDisabledEntities.Dispose(Dependency);
         noEntities.Dispose(Dependency);
@@ -158,6 +177,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
         public ComponentTypeHandle<AsteroidData> AsteroidTypeHandle;
         [ReadOnly]
         public uint randomSeed;
+        [ReadOnly]
+        public NativeArray<Entity> EnabledBigAsteroids;
 
         public EntityCommandBuffer.ParallelWriter commandBuffer;
 
@@ -168,7 +189,9 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
             Unity.Mathematics.Random random = new Unity.Mathematics.Random((uint)((threadIndex + 1) * (chunkIndex + 1) * randomSeed));
 
-            for (int i = 0; i < asteroids.Length; i++)
+            int amountToEnabled = 3 - EnabledBigAsteroids.Length;
+
+            for (int i = 0; i < asteroids.Length && i < amountToEnabled; i++)
             {
                 positions[i] = new Translation() { Value = GetRandomPosArea(ref random, 6f, 18f, 8f, 12.5f) };
                 float3 dir = random.NextFloat3Direction();
@@ -216,6 +239,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
                 commandBuffer.RemoveComponent<BulletHitTag>(i, asteroids[i].entity);
                 commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);
+                commandBuffer.AddComponent<DestroyedTag>(i, asteroids[i].entity);
 
                 for (int j = 0; j < amountDivision; j++)
                 {
