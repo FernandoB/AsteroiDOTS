@@ -40,7 +40,7 @@ public class AsteroidsCreationSystem : SystemBase
 
         EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();
 
-        float3 startPos = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld);
+        float3 startPos = new float3(outOfThisWorld, outOfThisWorld, 0);
 
         for (int i = 0; i < maxBigAsteroids; i++)
         {

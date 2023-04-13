@@ -5,9 +5,16 @@ using Unity.Entities;
 
 public class MainGame : MonoBehaviour
 {
+    public static MainGame Instance = null;
+
     public GameObject gameStartUI;
 
     private EntityManager entityManager;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -26,5 +33,10 @@ public class MainGame : MonoBehaviour
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         Entity entity = entityManager.CreateEntity();
         entityManager.AddComponent<GameStateStart>(entity);
+    }
+
+    public void GameEnd()
+    {
+        gameStartUI.SetActive(true);
     }
 }

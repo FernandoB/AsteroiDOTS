@@ -34,7 +34,9 @@ public class PlayerControllerSystem : SystemBase
             vIn = 0f;
         }
 
-        Entities.ForEach((ref PlayerData player, ref Translation translation, ref Rotation rotation, in LocalToWorld local2World) =>
+        Entities
+            .WithNone<DisabledTag>()
+            .ForEach((ref PlayerData player, ref Translation translation, ref Rotation rotation, in LocalToWorld local2World) =>
         {
 
             rotation.Value = math.mul(rotation.Value, quaternion.RotateZ(math.radians(player.rotationSpeed * hIn * deltaTime)));

@@ -52,7 +52,9 @@ public class BulletCreationSystem : SystemBase
         float bulletMaxSpeed = bulletDataPrefab.maxSpeed;
         float lifeTime = bulletDataPrefab.lifeTime;
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
+        Entities
+            .WithNone<DisabledTag>()
+            .ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
         {
             
             Entity bullet = pw.Instantiate(entityInQueryIndex, prefab);       

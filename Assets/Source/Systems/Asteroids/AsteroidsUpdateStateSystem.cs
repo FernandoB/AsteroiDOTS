@@ -235,7 +235,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
             {
                 float3 divisionPos = positions[i].Value;
 
-                positions[i] = new Translation() { Value = new float3(outOfThisWorld, outOfThisWorld, outOfThisWorld) };
+                positions[i] = new Translation() { Value = new float3(outOfThisWorld, outOfThisWorld, 0) };
 
                 scores[i] = new ScoreCounterData() { scoreCount = scores[i].scoreCount + 1 };
 

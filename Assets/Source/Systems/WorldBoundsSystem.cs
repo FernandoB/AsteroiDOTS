@@ -6,6 +6,8 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+[UpdateBefore(typeof(PlayerLivesSystem))]
+[UpdateBefore(typeof(AsteroidsUpdateStateSystem))]
 public class WorldBoundsSystem : SystemBase
 {
     private float offset = 0.5f;

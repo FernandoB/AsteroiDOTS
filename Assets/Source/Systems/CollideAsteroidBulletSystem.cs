@@ -9,7 +9,7 @@ using Unity.Physics.Systems;
 
 public class CollideAsteroidBulletSystem : SystemBase
 {
-    private EndSimulationEntityCommandBufferSystem endSimulation_ecbs;
+    private BeginSimulationEntityCommandBufferSystem simulation_ecbs;
     private BuildPhysicsWorld buildPhysicsWorld;
     private StepPhysicsWorld stepPhysicsWorld;
 
@@ -17,14 +17,14 @@ public class CollideAsteroidBulletSystem : SystemBase
     {
         base.OnCreate();
 
-        endSimulation_ecbs = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        simulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
         buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
         stepPhysicsWorld = World.GetOrCreateSystem<StepPhysicsWorld>();
     }
 
     protected override void OnUpdate()
     {
-        EntityCommandBuffer.ParallelWriter ecb = endSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
+        EntityCommandBuffer.ParallelWriter ecb = simulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
         TriggerJob triggerJob = new TriggerJob() {
             asteroidsData = GetComponentDataFromEntity<AsteroidData>(),
@@ -36,7 +36,7 @@ public class CollideAsteroidBulletSystem : SystemBase
 
         Dependency = triggerJob.Schedule(stepPhysicsWorld.Simulation, ref buildPhysicsWorld.PhysicsWorld, Dependency);
 
-        endSimulation_ecbs.AddJobHandleForProducer(Dependency);
+        simulation_ecbs.AddJobHandleForProducer(Dependency);
     }
 
     private struct TriggerJob : ITriggerEventsJob
