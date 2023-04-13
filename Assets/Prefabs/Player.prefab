@@ -81,7 +81,7 @@ MonoBehaviour:
   maxSpeed: 8
   rotationSpeed: 180
   resCooldown: 1
-  lives: 2
+  lives: 20
   resCooldownCounter: 0
   currentSpeed: 0
   direction:

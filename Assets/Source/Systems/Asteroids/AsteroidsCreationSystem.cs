@@ -8,11 +8,7 @@ using UnityEngine;
 
 public class AsteroidsCreationSystem : SystemBase
 {
-    //private NativeArray<Entity> asteroidsBig;
-    //private NativeArray<Entity> asteroidsMedium;
-    //private NativeArray<Entity> asteroidsSmall;
-
-    private const int maxBigAsteroids = 5;
+    private const int maxBigAsteroids = 20;
 
     private const float outOfThisWorld = 30f;
 

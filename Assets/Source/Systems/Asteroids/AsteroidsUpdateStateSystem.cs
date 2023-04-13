@@ -36,6 +36,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
     private bool posibleNextWave = false;
     private int nextWaveFrameCounter = 0;
 
+    private int waveAmountAsteroids = 0;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -106,12 +108,14 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
                 if (nextBigWave)
                 {
+                    waveAmountAsteroids += 2;
+
                     UpdateBigDisabled updateBigDisabled = new UpdateBigDisabled()
                     {
                         PositionTypeHandle = GetComponentTypeHandle<Translation>(false),
                         AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
                         commandBuffer = pw,
-                        amountToEnable = 1,
+                        amountToEnable = waveAmountAsteroids,
                         randomSeed = randomSeed
                     };
                     Dependency = updateBigDisabled.ScheduleParallel(bigDisabledNoneDestroyedQuery, Dependency);
