@@ -24,16 +24,19 @@ public class CollideSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        EntityCommandBuffer.ParallelWriter ecb = endSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
+
         TriggerJob triggerJob = new TriggerJob() {
             asteroidsData = GetComponentDataFromEntity<AsteroidData>(),
             bulletsData = GetComponentDataFromEntity<BulletData>(),
             entitiesToDelete = GetComponentDataFromEntity<DeleteTag>(),
             entitiesToBulletHit = GetComponentDataFromEntity<BulletHitTag>(),
-            commandBuffer = endSimulation_ecbs.CreateCommandBuffer()
-            };
+            commandBuffer = ecb
+        };
 
-        JobHandle jobHandle = triggerJob.Schedule(stepPhysicsWorld.Simulation, ref buildPhysicsWorld.PhysicsWorld, Dependency);
-        jobHandle.Complete();
+        Dependency = triggerJob.Schedule(stepPhysicsWorld.Simulation, ref buildPhysicsWorld.PhysicsWorld, Dependency);
+
+        endSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
 
     private struct TriggerJob : ITriggerEventsJob
@@ -42,26 +45,26 @@ public class CollideSystem : SystemBase
         [ReadOnly] public ComponentDataFromEntity<BulletData> bulletsData;
         [ReadOnly] public ComponentDataFromEntity<DeleteTag> entitiesToDelete;
         [ReadOnly] public ComponentDataFromEntity<BulletHitTag> entitiesToBulletHit;
-        public EntityCommandBuffer commandBuffer;
+        public EntityCommandBuffer.ParallelWriter commandBuffer;
 
         public void Execute(TriggerEvent triggerEvent)
         {
-            TestTriggers(triggerEvent.EntityA, triggerEvent.EntityB);
-            TestTriggers(triggerEvent.EntityB, triggerEvent.EntityA);
+            TestTriggers(triggerEvent.EntityA, triggerEvent.BodyIndexA, triggerEvent.EntityB, triggerEvent.BodyIndexB);
+            TestTriggers(triggerEvent.EntityB, triggerEvent.BodyIndexA, triggerEvent.EntityA, triggerEvent.BodyIndexB);
         }
 
-        private void TestTriggers(Entity entityA, Entity entityB)
+        private void TestTriggers(Entity entityA, int indexA, Entity entityB, int indexB)
         {
             if(asteroidsData.HasComponent(entityA)
                 && bulletsData.HasComponent(entityB))
             {
                 if( ! entitiesToBulletHit.HasComponent(entityA))
                 {
-                    commandBuffer.AddComponent<BulletHitTag>(entityA);
+                    commandBuffer.AddComponent<BulletHitTag>(indexA, entityA);
                 }
                 if( ! entitiesToDelete.HasComponent(entityB))
                 {
-                    commandBuffer.AddComponent<DeleteTag>(entityB);
+                    commandBuffer.AddComponent<DeleteTag>(indexB, entityB);
                 }
             }
         }
