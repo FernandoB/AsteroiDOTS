@@ -7,7 +7,7 @@ using Unity.Transforms;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
-public class CollideSystem : SystemBase
+public class CollideAsteroidBulletSystem : SystemBase
 {
     private EndSimulationEntityCommandBufferSystem endSimulation_ecbs;
     private BuildPhysicsWorld buildPhysicsWorld;
@@ -30,7 +30,7 @@ public class CollideSystem : SystemBase
             asteroidsData = GetComponentDataFromEntity<AsteroidData>(),
             bulletsData = GetComponentDataFromEntity<BulletData>(),
             entitiesToDelete = GetComponentDataFromEntity<DeleteTag>(),
-            entitiesToBulletHit = GetComponentDataFromEntity<BulletHitTag>(),
+            entitiesToHit = GetComponentDataFromEntity<HitTag>(),
             commandBuffer = ecb
         };
 
@@ -44,7 +44,7 @@ public class CollideSystem : SystemBase
         [ReadOnly] public ComponentDataFromEntity<AsteroidData> asteroidsData;
         [ReadOnly] public ComponentDataFromEntity<BulletData> bulletsData;
         [ReadOnly] public ComponentDataFromEntity<DeleteTag> entitiesToDelete;
-        [ReadOnly] public ComponentDataFromEntity<BulletHitTag> entitiesToBulletHit;
+        [ReadOnly] public ComponentDataFromEntity<HitTag> entitiesToHit;
         public EntityCommandBuffer.ParallelWriter commandBuffer;
 
         public void Execute(TriggerEvent triggerEvent)
@@ -58,9 +58,9 @@ public class CollideSystem : SystemBase
             if(asteroidsData.HasComponent(entityA)
                 && bulletsData.HasComponent(entityB))
             {
-                if( ! entitiesToBulletHit.HasComponent(entityA))
+                if( ! entitiesToHit.HasComponent(entityA))
                 {
-                    commandBuffer.AddComponent<BulletHitTag>(indexA, entityA);
+                    commandBuffer.AddComponent<HitTag>(indexA, entityA);
                 }
                 if( ! entitiesToDelete.HasComponent(entityB))
                 {

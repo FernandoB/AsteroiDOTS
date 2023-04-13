@@ -3,6 +3,6 @@ using Unity.Entities;
 
 [Serializable]
 [GenerateAuthoringComponent]
-public struct BulletHitTag : IComponentData
+public struct HitTag : IComponentData
 {
 }
