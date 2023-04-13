@@ -18,4 +18,5 @@ public struct PlayerData : IComponentData
     public float resCooldownCounter;
     public float currentSpeed;
     public float3 direction;
+    public bool readyToRes;
 }

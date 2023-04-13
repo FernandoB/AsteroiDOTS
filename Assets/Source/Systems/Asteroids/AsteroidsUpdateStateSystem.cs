@@ -205,7 +205,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
     protected override void OnStopRunning()
     {
-
+        waveAmountAsteroids = 0;
     }
 
     private static float3 GetRandomPosArea(ref Unity.Mathematics.Random randon, float minX, float maxX, float minY, float maxY)

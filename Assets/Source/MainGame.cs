@@ -11,6 +11,8 @@ public class MainGame : MonoBehaviour
 
     private EntityManager entityManager;
 
+    private bool gameRunning = false;
+
     private void Awake()
     {
         Application.targetFrameRate = 60;
@@ -19,25 +21,45 @@ public class MainGame : MonoBehaviour
 
     void Start()
     {
-        
+        gameStartUI.SetActive(true);
     }
 
     void Update()
     {
-        
+        if( ! gameRunning)
+        {
+            if(Input.anyKeyDown)
+            {
+                OnStartGame();
+            }
+        }
     }
 
-    public void OnClickPlayGame()
+    public void OnStartGame()
     {
         gameStartUI.SetActive(false);
 
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         Entity entity = entityManager.CreateEntity();
         entityManager.AddComponent<GameStateStart>(entity);
+
+        gameRunning = true;
     }
 
     public void GameEnd()
     {
         gameStartUI.SetActive(true);
+
+        gameRunning = false;
+    }
+
+    public void PlayerReadyToRes()
+    {
+        gameStartUI.SetActive(true);
+    }
+
+    public void PlayerRes()
+    {
+        gameStartUI.SetActive(false);
     }
 }
