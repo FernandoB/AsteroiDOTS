@@ -15,6 +15,9 @@ public class PlayerLivesSystem : SystemBase
     private bool prevReadyToRes = false;
     private bool actualReadyToRes = false;
 
+    private int prevPlayerLives = 0;
+    private int actualPlayerLives = 0;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -28,6 +31,7 @@ public class PlayerLivesSystem : SystemBase
     {
         PlayerData player = GetSingleton<PlayerData>();
 
+        // player res
         prevReadyToRes = actualReadyToRes;
         actualReadyToRes = player.readyToRes;
         if (actualReadyToRes && !prevReadyToRes)
@@ -37,6 +41,14 @@ public class PlayerLivesSystem : SystemBase
         else if(prevReadyToRes && !actualReadyToRes)
         {
             MainGame.Instance.PlayerRes();
+        }
+
+        // player lives
+        prevPlayerLives = actualPlayerLives;
+        actualPlayerLives = player.lives;
+        if (actualPlayerLives != prevPlayerLives)
+        {
+            MainGame.Instance.SetPlayerLives(actualPlayerLives);
         }
 
         Entity gameStateEntity = GetSingletonEntity<GameStateRunning>();

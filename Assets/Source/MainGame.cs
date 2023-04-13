@@ -26,9 +26,9 @@ public class MainGame : MonoBehaviour
 
     void Update()
     {
-        if( ! gameRunning)
+        if (!gameRunning)
         {
-            if(Input.anyKeyDown)
+            if (Input.anyKeyDown)
             {
                 OnStartGame();
             }
@@ -61,5 +61,10 @@ public class MainGame : MonoBehaviour
     public void PlayerRes()
     {
         gameStartUI.SetActive(false);
+    }
+
+    public void SetPlayerLives(int lives)
+    {
+        Debug.Log("Player Lives: " + lives);
     }
 }
