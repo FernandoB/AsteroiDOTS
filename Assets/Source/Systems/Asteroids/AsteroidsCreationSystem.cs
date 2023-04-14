@@ -44,7 +44,7 @@ public class AsteroidsCreationSystem : SystemBase
             ecb.SetComponent<Translation>(e, new Translation() { Value = startPos } );
             ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
             ecb.AddComponent<DisabledTag>(e);
-            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 });
+            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 , score = 25 });
         }
 
         for (int i = 0; i < maxBigAsteroids * 2; i++)
@@ -53,7 +53,7 @@ public class AsteroidsCreationSystem : SystemBase
             ecb.SetComponent<Translation>(e, new Translation() { Value = startPos });
             ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
             ecb.AddComponent<DisabledTag>(e);
-            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 });
+            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 , score = 50 });
         }
 
         for (int i = 0; i < maxBigAsteroids * 2 * 2; i++)
@@ -62,7 +62,7 @@ public class AsteroidsCreationSystem : SystemBase
             ecb.SetComponent<Translation>(e, new Translation() { Value = startPos });
             ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
             ecb.AddComponent<DisabledTag>(e);
-            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 });
+            ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 , score = 100 });
         }
     }
 

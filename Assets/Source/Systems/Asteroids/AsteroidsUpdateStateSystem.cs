@@ -281,7 +281,9 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
                 positions[i] = new Translation() { Value = new float3(outOfThisWorld, outOfThisWorld, 0) };
 
-                scores[i] = new ScoreCounterData() { scoreCount = scores[i].scoreCount + 1 };
+                ScoreCounterData sc = scores[i];
+                sc.scoreCount = sc.scoreCount + 1;
+                scores[i] = sc;
 
                 commandBuffer.RemoveComponent<HitTag>(i, asteroids[i].entity);
                 commandBuffer.AddComponent<DisabledTag>(i, asteroids[i].entity);

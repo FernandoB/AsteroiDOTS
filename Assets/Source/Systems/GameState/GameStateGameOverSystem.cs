@@ -23,7 +23,7 @@ public class GameStateGameOverSystem : SystemBase
         EntityCommandBuffer.ParallelWriter ecb = simulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
         Entities.ForEach((Entity entity, int entityInQueryIndex, in PlayerData player) =>
-        {
+        {      
             ecb.DestroyEntity(entityInQueryIndex, entity);
 
         }).ScheduleParallel();

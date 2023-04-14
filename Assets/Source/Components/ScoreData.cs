@@ -4,8 +4,7 @@ using Unity.Mathematics;
 
 [Serializable]
 [GenerateAuthoringComponent]
-public struct ScoreCounterData : IComponentData
+public struct ScoreData : IComponentData
 {
     public int score;
-    public int scoreCount;
 }

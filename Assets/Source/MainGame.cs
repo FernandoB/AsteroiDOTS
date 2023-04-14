@@ -67,4 +67,9 @@ public class MainGame : MonoBehaviour
     {
         Debug.Log("Player Lives: " + lives);
     }
+
+    public void SetScore(int score)
+    {
+        Debug.Log("Score: " + score);
+    }
 }
