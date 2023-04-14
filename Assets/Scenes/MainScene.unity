@@ -672,7 +672,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1171261701}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5483ebfbbfba446a8a31cde9941d3b6e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e2172f9e50374d758c83f5f16906d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   livesPrefab: {fileID: 4301015074469011318, guid: 84a71bafe6bcc49ba824bd05e3fecbc0, type: 3}
