@@ -51,7 +51,7 @@ public class PlayerLivesSystem : SystemBase
         {
             ScoreData scoreData = GetSingleton<ScoreData>();
             prevExtraLives = actualExtraLives;
-            actualExtraLives = scoreData.score / 200;
+            actualExtraLives = scoreData.score / 2000;
             if (actualExtraLives != prevExtraLives)
             {
                 player.lives += 1;

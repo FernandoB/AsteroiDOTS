@@ -2,16 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
+using UnityEngine.UI;
 
 public class MainGame : MonoBehaviour
 {
     public static MainGame Instance = null;
 
-    public GameObject gameStartUI;
+    public GameObject livesPrefab;
+
+    public GameObject gameStartText;
+
+    public Text scoreText;
+
+    public GameObject livesContainer;
 
     private EntityManager entityManager;
 
     private bool gameRunning = false;
+
+    private int currentLives = 0;
+
+    private List<GameObject> livesElements;
+
 
     private void Awake()
     {
@@ -21,7 +33,8 @@ public class MainGame : MonoBehaviour
 
     void Start()
     {
-        gameStartUI.SetActive(true);
+        livesElements = new List<GameObject>();
+        gameStartText.SetActive(true);
     }
 
     void Update()
@@ -37,7 +50,9 @@ public class MainGame : MonoBehaviour
 
     public void OnStartGame()
     {
-        gameStartUI.SetActive(false);
+        gameStartText.SetActive(false);
+
+        scoreText.text = "" + 0;
 
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         Entity entity = entityManager.CreateEntity();
@@ -48,28 +63,50 @@ public class MainGame : MonoBehaviour
 
     public void GameEnd()
     {
-        gameStartUI.SetActive(true);
+        gameStartText.SetActive(true);
 
         gameRunning = false;
     }
 
     public void PlayerReadyToRes()
     {
-        gameStartUI.SetActive(true);
+        gameStartText.SetActive(true);
     }
 
     public void PlayerRes()
     {
-        gameStartUI.SetActive(false);
+        gameStartText.SetActive(false);
     }
 
     public void SetPlayerLives(int lives)
     {
-        Debug.Log("Player Lives: " + lives);
+        int deltaLives = lives - currentLives;
+        currentLives = lives;
+
+        if (deltaLives > 0)
+        {
+            for (int i = 0; i < deltaLives; i++)
+            {
+                GameObject go = GameObject.Instantiate(livesPrefab);
+                go.transform.parent = livesContainer.transform;
+                livesElements.Add(go);
+            }
+        }
+        else
+        {
+            deltaLives = Mathf.Abs(deltaLives);
+            for (int i = deltaLives - 1; i >= 0; i--)
+            {
+                GameObject go = livesElements[deltaLives - 1];
+                livesElements.Remove(go);
+                go.transform.parent = null;
+                GameObject.Destroy(go);
+            }
+        }
     }
 
     public void SetScore(int score)
     {
-        Debug.Log("Score: " + score);
+        scoreText.text = "" + score;
     }
 }

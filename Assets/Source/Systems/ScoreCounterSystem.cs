@@ -33,8 +33,11 @@ public class ScoreCounterSystem : SystemBase
 
         scoreAcum = new NativeArray<int>(1, Allocator.Persistent);
 
-        Entity scoreDataEntity = EntityManager.CreateEntity();
-        EntityManager.AddComponentData<ScoreData>(scoreDataEntity, new ScoreData() { score = 0 });
+        if ( ! HasSingleton<ScoreData>())
+        {
+            Entity scoreDataEntity = EntityManager.CreateEntity();
+            EntityManager.AddComponentData<ScoreData>(scoreDataEntity, new ScoreData() { score = 0 });
+        }
     }
 
     protected override void OnUpdate()
