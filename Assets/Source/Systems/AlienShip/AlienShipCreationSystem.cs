@@ -43,7 +43,7 @@ public class AlienShipCreationSystem : SystemBase
         Entity entitySmall = ecb.Instantiate(entitiesPrefabs.alienShipSmallEntityPrefab);
         ecb.SetComponent<Translation>(entitySmall, new Translation() { Value = startPos });
         ecb.AddComponent<DisabledTag>(entitySmall);
-        ecb.AddComponent<ScoreCounterData>(entitySmall, new ScoreCounterData() { scoreCount = 0, score = 200 });
+        ecb.AddComponent<ScoreCounterData>(entitySmall, new ScoreCounterData() { scoreCount = 0, score = 400 });
     }
 
     protected override void OnDestroy()

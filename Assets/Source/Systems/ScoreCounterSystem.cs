@@ -23,7 +23,7 @@ public class ScoreCounterSystem : SystemBase
 
         RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
 
-        scoreQuery = GetEntityQuery(ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<ScoreCounterData>());
+        scoreQuery = GetEntityQuery(ComponentType.ReadOnly<ScoreCounterData>());
     }
 
     protected override void OnStartRunning()

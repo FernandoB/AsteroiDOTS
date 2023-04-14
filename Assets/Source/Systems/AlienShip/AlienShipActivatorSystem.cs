@@ -83,9 +83,25 @@ public class AlienShipActivatorSystem : SystemBase
                 Debug.Log("SPAWN");
                 running = false;
 
-                alienShipBigData.direction = new float3(1f, 1f, 0f);
-                ecb.SetComponent<AlienShipData>(alienShipBigEntity, alienShipBigData);
-                ecb.RemoveComponent<DisabledTag>(alienShipBigEntity);
+                bool select = false;
+
+                Entity alienShipEntity;
+                AlienShipData alienShipData;
+
+                if (select)
+                {
+                    alienShipEntity = alienShipBigEntity;
+                    alienShipData = alienShipBigData;
+                }
+                else
+                {
+                    alienShipEntity = alienShipSmallEntity;
+                    alienShipData = alienShipSmallData;
+                }
+
+                alienShipData.direction = new float3(1f, 1f, 0f);
+                ecb.SetComponent<AlienShipData>(alienShipEntity, alienShipData);
+                ecb.RemoveComponent<DisabledTag>(alienShipEntity);
             }
         }
     }
