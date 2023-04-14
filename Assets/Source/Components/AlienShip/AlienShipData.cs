@@ -6,6 +6,6 @@ using Unity.Mathematics;
 [GenerateAuthoringComponent]
 public struct AlienShipData : IComponentData
 {
-    public float maxSpeed;
+    public float speed;
     public float3 direction;
 }
