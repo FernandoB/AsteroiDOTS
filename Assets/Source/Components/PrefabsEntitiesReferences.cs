@@ -16,5 +16,7 @@ public struct PrefabsEntitiesReferences : IComponentData
 
     public Entity bulletEntityPrefab;
 
-    public int asteroidsCounter;
+    public Entity alienShipBigEntityPrefab;
+
+    public Entity alienShipSmallEntityPrefab;
 }

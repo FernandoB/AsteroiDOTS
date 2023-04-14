@@ -171,3 +171,5 @@ MonoBehaviour:
   asteroidSmallPrefab: {fileID: 6710780982959920629, guid: ad3d403a0b41d4e7bb87193171ed1f4e, type: 3}
   playerPrefab: {fileID: 821576534560046573, guid: 2a887c6c6a1af4ffcbe74fbba02f3cca, type: 3}
   bulletPrefab: {fileID: 3449251402756781210, guid: 58bd9be5b327a4ad8b59c263cd792f61, type: 3}
+  alienShipBigPrefab: {fileID: 5465114770570512004, guid: bb68fa98284cc4e94b1b3f28071eebbf, type: 3}
+  alienShipSmallPrefab: {fileID: 5556177041981995404, guid: e05414dd8cd0e46848e92a1668f295ed, type: 3}

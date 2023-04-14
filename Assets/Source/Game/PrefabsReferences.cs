@@ -9,4 +9,6 @@ public class PrefabsReferences : MonoBehaviour
     public GameObject asteroidSmallPrefab;
     public GameObject playerPrefab;
     public GameObject bulletPrefab;
+    public GameObject alienShipBigPrefab;
+    public GameObject alienShipSmallPrefab;
 }

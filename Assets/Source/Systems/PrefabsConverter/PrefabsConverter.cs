@@ -19,7 +19,9 @@ public class PrefabsConverter : GameObjectConversionSystem
                 asteroidMediumEntityPrefab = GetPrimaryEntity(prefabReference.asteroidMediumPrefab),
                 asteroidSmallEntityPrefab = GetPrimaryEntity(prefabReference.asteroidSmallPrefab),
                 playerEntityPrefab = GetPrimaryEntity(prefabReference.playerPrefab),
-                bulletEntityPrefab = GetPrimaryEntity(prefabReference.bulletPrefab)
+                bulletEntityPrefab = GetPrimaryEntity(prefabReference.bulletPrefab),
+                alienShipBigEntityPrefab = GetPrimaryEntity(prefabReference.alienShipBigPrefab),
+                alienShipSmallEntityPrefab = GetPrimaryEntity(prefabReference.alienShipSmallPrefab)
             };
 
             DstEntityManager.AddComponentData(entity, component);
