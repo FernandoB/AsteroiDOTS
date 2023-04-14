@@ -18,6 +18,9 @@ public class PlayerLivesSystem : SystemBase
     private int prevPlayerLives = 0;
     private int actualPlayerLives = 0;
 
+    private int prevExtraLives = 0;
+    private int actualExtraLives = 0;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -41,6 +44,19 @@ public class PlayerLivesSystem : SystemBase
         else if(prevReadyToRes && !actualReadyToRes)
         {
             MainGame.Instance.PlayerRes();
+        }
+
+        // extra life
+        if (HasSingleton<ScoreData>())
+        {
+            ScoreData scoreData = GetSingleton<ScoreData>();
+            prevExtraLives = actualExtraLives;
+            actualExtraLives = scoreData.score / 200;
+            if (actualExtraLives != prevExtraLives)
+            {
+                player.lives += 1;
+                SetSingleton<PlayerData>(player);
+            }
         }
 
         // player lives

@@ -32,6 +32,9 @@ public class ScoreCounterSystem : SystemBase
         actualScore = 0;
 
         scoreAcum = new NativeArray<int>(1, Allocator.Persistent);
+
+        Entity scoreDataEntity = EntityManager.CreateEntity();
+        EntityManager.AddComponentData<ScoreData>(scoreDataEntity, new ScoreData() { score = 0 });
     }
 
     protected override void OnUpdate()
@@ -47,6 +50,7 @@ public class ScoreCounterSystem : SystemBase
                 actualScore = scoreAcum[0];
                 if (actualScore != prevScore)
                 {
+                    SetSingleton<ScoreData>(new ScoreData() { score = actualScore } );
                     MainGame.Instance.SetScore(actualScore);
                 }
             }
