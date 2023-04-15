@@ -31,6 +31,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
     private EntityQuery smallDivisionQuery;
     private EntityQuery smallBulletHitQuery;
 
+    private EntityQuery alienShipDisabledQuery;
+
     private bool nextBigWave = false;
     private bool prevNextBigWave = false;
     private bool posibleNextWave = false;
@@ -84,6 +86,13 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
         smallDivisionQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidSmallTag>(), ComponentType.ReadOnly<AsteroidDivision>(), ComponentType.ReadOnly<DisabledTag>());
         smallBulletHitQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<AsteroidData>(), ComponentType.ReadOnly<AsteroidSmallTag>(), ComponentType.ReadOnly<HitTag>());
+
+        EntityQueryDesc alienShipEnableddDesc = new EntityQueryDesc
+        {
+            None = new ComponentType[] { ComponentType.ReadOnly<DisabledTag>() },
+            All = new ComponentType[] { ComponentType.ReadOnly<AlienShipData>() }
+        };
+        alienShipDisabledQuery = GetEntityQuery(alienShipEnableddDesc);
     }
 
     protected override void OnStartRunning()
@@ -98,7 +107,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
         EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
         prevNextBigWave = nextBigWave;
-        nextBigWave = bigEnabledQuery.IsEmpty && mediumEnabledQuery.IsEmpty && smallEnabledQuery.IsEmpty;
+        nextBigWave = bigEnabledQuery.IsEmpty && mediumEnabledQuery.IsEmpty && smallEnabledQuery.IsEmpty && alienShipDisabledQuery.IsEmpty;
         if (posibleNextWave)
         {
             nextWaveFrameCounter--;
@@ -108,7 +117,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
                 if (nextBigWave)
                 {
-                    waveAmountAsteroids += 2;
+                    waveAmountAsteroids += 1;
 
                     UpdateBigDisabled updateBigDisabled = new UpdateBigDisabled()
                     {
