@@ -10,7 +10,7 @@ public class AsteroidsCreationSystem : SystemBase
 {
     private const int maxBigAsteroids = 20;
 
-    private const float outOfThisWorld = 30f;
+    private const float outOfThisWorld = 300f;
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 

@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class AsteroidsUpdateStateSystem : SystemBase
 {
-    private const float outOfThisWorld = 30f;
+    private const float outOfThisWorld = 300f;
     private double baseTime = System.DateTime.Now.TimeOfDay.TotalSeconds;
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;

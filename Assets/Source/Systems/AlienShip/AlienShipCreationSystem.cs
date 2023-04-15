@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class AlienShipCreationSystem : SystemBase
 {
-    private const float outOfThisWorld = 30f;
+    private const float outOfThisWorld = 300f;
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
