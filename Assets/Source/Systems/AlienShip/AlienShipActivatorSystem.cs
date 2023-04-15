@@ -108,7 +108,7 @@ public class AlienShipActivatorSystem : SystemBase
                 newDir.z = 0;
                 newDir = math.normalize(newDir);
                 alienShipData.direction = newDir;
-                float3 startPos = randomM.NextBool() ? GetRandomPosArea(ref randomM, 50f, 60f, 0f, 10f) : GetRandomPosArea(ref randomM, 0f, 15f, 50f, 60f);
+                float3 startPos = randomM.NextBool() ? Utils.GetRandomPosArea(ref randomM, 50f, 60f, 0f, 10f) : Utils.GetRandomPosArea(ref randomM, 0f, 15f, 50f, 60f);
 
                 ecb.SetComponent<Translation>(alienShipEntity, new Translation() { Value = startPos } );
                 ecb.SetComponent<AlienShipData>(alienShipEntity, alienShipData);
@@ -125,12 +125,5 @@ public class AlienShipActivatorSystem : SystemBase
     protected override void OnStopRunning()
     {
 
-    }
-
-    private static float3 GetRandomPosArea(ref Unity.Mathematics.Random randon, float minX, float maxX, float minY, float maxY)
-    {
-        return new float3(randon.NextFloat(minX, maxX) * (randon.NextBool() ? -1f : 1f),
-                            randon.NextFloat(minY, maxY) * (randon.NextBool() ? -1f : 1f),
-                            0f);
     }
 }

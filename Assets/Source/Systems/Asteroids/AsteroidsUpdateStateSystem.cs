@@ -217,13 +217,6 @@ public class AsteroidsUpdateStateSystem : SystemBase
         waveAmountAsteroids = 0;
     }
 
-    private static float3 GetRandomPosArea(ref Unity.Mathematics.Random randon, float minX, float maxX, float minY, float maxY)
-    {
-        return new float3(randon.NextFloat(minX, maxX) * (randon.NextBool() ? -1f : 1f),
-                            randon.NextFloat(minY, maxY) * (randon.NextBool() ? -1f : 1f),
-                            0f);
-    }
-
     private struct UpdateBigDisabled : IJobChunk
     {
         [Unity.Collections.LowLevel.Unsafe.NativeSetThreadIndex]
@@ -248,7 +241,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
             for (int i = 0; i < asteroids.Length && i < amountToEnable; i++)
             {
-                positions[i] = new Translation() { Value = GetRandomPosArea(ref random, 6f, 18f, 8f, 12.5f) };
+                positions[i] = new Translation() { Value = Utils.GetRandomPosArea(ref random, 6f, 18f, 8f, 12.5f) };
                 float3 dir = random.NextFloat3Direction();
                 dir.z = 0f;
                 AsteroidData asteroidData = new AsteroidData();
