@@ -30,6 +30,17 @@ public class PlayerLivesSystem : SystemBase
         RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
     }
 
+    protected override void OnStartRunning()
+    {
+        prevExtraLives = 0;
+        actualExtraLives = 0;
+
+        if (HasSingleton<ScoreData>())
+        {
+            SetSingleton<ScoreData>(new ScoreData() { score = 0 });
+        }
+    }
+
     protected override void OnUpdate()
     {
         PlayerData player = GetSingleton<PlayerData>();
