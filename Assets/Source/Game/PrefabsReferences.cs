@@ -15,6 +15,8 @@ public class PrefabsReferences : MonoBehaviour
     public GameObject alienShipBigPrefab;
     public GameObject alienShipSmallPrefab;
 
+    public GameObject shieldPrefab;
+
     public GameObject powerupShield;
     public GameObject powerupWeaponA;
 }
