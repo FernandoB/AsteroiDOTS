@@ -9,6 +9,7 @@ using UnityEngine;
 public class PowerupActivatorSystem : SystemBase
 {
     private EntityQuery powerupQuery;
+    private EntityQuery powerupShieldQuery;
 
     private bool prevAllDisabled;
     private bool currentAllDisabled;
@@ -31,11 +32,17 @@ public class PowerupActivatorSystem : SystemBase
 
         RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
 
-        EntityQueryDesc alienShipDesc = new EntityQueryDesc
+        EntityQueryDesc powerupQueryDesc = new EntityQueryDesc
         {
             All = new ComponentType[] { ComponentType.ReadOnly<PowerupDataCollectable>() }
         };
-        powerupQuery = GetEntityQuery(alienShipDesc);
+        powerupQuery = GetEntityQuery(powerupQueryDesc);
+
+        EntityQueryDesc powerupShieldQueryDesc = new EntityQueryDesc
+        {
+            All = new ComponentType[] { ComponentType.ReadOnly<PowerupShield>() }
+        };
+        powerupShieldQuery = GetEntityQuery(powerupShieldQueryDesc);
     }
 
     protected override void OnStartRunning()
@@ -54,11 +61,11 @@ public class PowerupActivatorSystem : SystemBase
         EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();
 
         prevAllDisabled = currentAllDisabled;
-        currentAllDisabled = powerupQuery.IsEmpty;
+        currentAllDisabled = powerupQuery.IsEmpty && powerupShieldQuery.IsEmpty;
 
         if (currentAllDisabled && !prevAllDisabled)
         {
-            timeCounter = randomM.NextFloat(0f, 1f);
+            timeCounter = randomM.NextFloat(3f, 4f);
             running = true;
         }
         else if (prevAllDisabled && !currentAllDisabled)
