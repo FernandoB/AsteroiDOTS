@@ -107,6 +107,7 @@ public class AlienShipActivatorSystem : SystemBase
 
                 randomM.InitState((uint)(float)(baseTime + Time.ElapsedTime * 100));
                 alienShipData.changeDirectionCounter = randomM.NextFloat(2f, 5f);
+                alienShipData.shootCounter = 1f;
                 float3 newDir = randomM.NextFloat3Direction() + alienShipData.direction;
                 newDir.z = 0;
                 newDir = math.normalize(newDir);

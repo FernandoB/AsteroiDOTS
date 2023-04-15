@@ -60,7 +60,7 @@ public class BulletCreationSystem : SystemBase
             Entity bullet = pw.Instantiate(entityInQueryIndex, prefab);       
 
             Rotation bulletRotation = new Rotation();
-            bulletRotation.Value = rotation.Value;
+            bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
 
             Translation bulletTranslation = new Translation();
             bulletTranslation.Value = translation.Value + (local2World.Up * player.size);

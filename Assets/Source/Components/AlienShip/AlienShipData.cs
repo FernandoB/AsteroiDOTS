@@ -12,4 +12,5 @@ public struct AlienShipData : IComponentData
 
     public float3 direction;
     public float changeDirectionCounter;
+    public float shootCounter;
 }
