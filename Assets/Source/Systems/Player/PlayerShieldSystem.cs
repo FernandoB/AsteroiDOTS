@@ -33,12 +33,13 @@ public class PlayerShieldSystem : SystemBase
         float deltaTime = Time.DeltaTime;
 
         Entities
-            .ForEach((Entity entity, int entityInQueryIndex, ref PowerupShield shield) =>
+            .ForEach((Entity entity, int entityInQueryIndex, ref PowerupShield shield, in Parent parent) =>
             {
                 shield.timeCounter -= deltaTime;
 
                 if(shield.timeCounter <= 0f)
                 {
+                    pw.RemoveComponent<PlayerShield>(entityInQueryIndex, parent.Value);
                     pw.DestroyEntity(entityInQueryIndex, entity);
                 }
 
@@ -46,17 +47,17 @@ public class PlayerShieldSystem : SystemBase
 
         Entities
             .WithAll<PlayerData>()
-            .WithAll<PowerupShieldTag>()
+            .WithAll<PowerupShieldHit>()
             .WithNone<DisabledTag>()
-            .WithNone<PowerupShield>()
             .ForEach((Entity entity, int entityInQueryIndex) =>
-            {
-                pw.RemoveComponent<PowerupShieldTag>(entityInQueryIndex, entity);
-                
+            {                               
                 Entity shieldEntity = pw.Instantiate(entityInQueryIndex, shieldPrefab);
                 pw.AddComponent<Parent>(entityInQueryIndex, shieldEntity, new Parent() { Value = entity });
                 pw.AddComponent<LocalToParent>(entityInQueryIndex, shieldEntity);
                 pw.AddComponent<PowerupShield>(entityInQueryIndex, shieldEntity, new PowerupShield() { timeCounter = 10f });
+
+                pw.RemoveComponent<PowerupShieldHit>(entityInQueryIndex, entity);
+                pw.AddComponent<PlayerShield>(entityInQueryIndex, entity, new PlayerShield() { shieldRef = shieldEntity } );
 
             }).Schedule();
 

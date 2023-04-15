@@ -120,6 +120,7 @@ public class PlayerLivesSystem : SystemBase
 
         Entities
             .WithAll<HitTag>()
+            .WithNone<PlayerShield>()
             .WithNone<DisabledTag>()
             .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PlayerData player, ref Rotation rotation) =>
         {
@@ -137,6 +138,27 @@ public class PlayerLivesSystem : SystemBase
             player.readyToRes = false;
 
         }).Schedule();
+
+        Entities
+            .WithAll<PlayerData>()
+            .WithAll<HitTag>()
+            .WithAll<PlayerShield>()
+            .WithNone<DisabledTag>()
+            .ForEach((Entity entity, int entityInQueryIndex) =>
+            {
+                pw.RemoveComponent<HitTag>(entityInQueryIndex, entity);
+
+            }).Schedule();
+
+        Entities
+            .WithAll<PlayerData>()
+            .WithAll<DisabledTag>()
+            .ForEach((Entity entity, int entityInQueryIndex, in PlayerShield playerShield) =>
+            {
+                pw.DestroyEntity(entityInQueryIndex, playerShield.shieldRef);
+                pw.RemoveComponent<PlayerShield>(entityInQueryIndex, entity);
+
+            }).Schedule();
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
