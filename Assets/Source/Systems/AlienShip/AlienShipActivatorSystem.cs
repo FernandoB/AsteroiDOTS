@@ -53,13 +53,12 @@ public class AlienShipActivatorSystem : SystemBase
         alienShipBigEntity = GetSingletonEntity<AlienShipBigTag>();
         alienShipBigData = EntityManager.GetComponentData<AlienShipData>(alienShipBigEntity);
         alienShipSmallEntity = GetSingletonEntity<AlienShipSmallTag>();
-        alienShipSmallData = EntityManager.GetComponentData<AlienShipData>(alienShipSmallEntity);
-
-        timeCounter = 2f;
-        running = false;
+        alienShipSmallData = EntityManager.GetComponentData<AlienShipData>(alienShipSmallEntity);        
 
         uint randomSeed = (uint)(float)(baseTime + Time.ElapsedTime * 100);
         randomM.InitState(randomSeed);
+
+        running = false;
     }
 
     protected override void OnUpdate()
@@ -71,13 +70,11 @@ public class AlienShipActivatorSystem : SystemBase
 
         if(currentAllDisabled && !prevAllDisabled)
         {
-            Debug.Log("START RUNNING");
-            timeCounter = 2f;
+            timeCounter = randomM.NextFloat(10f, 20f);
             running = true;
         }
         else if(prevAllDisabled && !currentAllDisabled)
         {
-            Debug.Log("ONE ENABLED");
         }
 
         if(running)
@@ -86,10 +83,9 @@ public class AlienShipActivatorSystem : SystemBase
 
             if(timeCounter <= 0)
             {
-                Debug.Log("SPAWN");
                 running = false;
 
-                bool select = true;
+                bool select = randomM.NextBool();
 
                 Entity alienShipEntity;
                 AlienShipData alienShipData;

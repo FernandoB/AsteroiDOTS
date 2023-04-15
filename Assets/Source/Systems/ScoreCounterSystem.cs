@@ -38,6 +38,10 @@ public class ScoreCounterSystem : SystemBase
             Entity scoreDataEntity = EntityManager.CreateEntity();
             EntityManager.AddComponentData<ScoreData>(scoreDataEntity, new ScoreData() { score = 0 });
         }
+        else
+        {
+            SetSingleton<ScoreData>(new ScoreData() { score = 0 });
+        }
     }
 
     protected override void OnUpdate()
