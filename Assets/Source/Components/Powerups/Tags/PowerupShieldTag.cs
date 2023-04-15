@@ -3,6 +3,6 @@ using Unity.Entities;
 
 [Serializable]
 [GenerateAuthoringComponent]
-public struct PowerupShield : IComponentData
+public struct PowerupShieldTag : IComponentData
 {
 }
