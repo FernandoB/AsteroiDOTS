@@ -89,7 +89,7 @@ public class AlienShipActivatorSystem : SystemBase
                 Debug.Log("SPAWN");
                 running = false;
 
-                bool select = false;
+                bool select = true;
 
                 Entity alienShipEntity;
                 AlienShipData alienShipData;
@@ -107,7 +107,7 @@ public class AlienShipActivatorSystem : SystemBase
 
                 randomM.InitState((uint)(float)(baseTime + Time.ElapsedTime * 100));
                 alienShipData.changeDirectionCounter = randomM.NextFloat(2f, 5f);
-                alienShipData.shootCounter = 1f;
+                alienShipData.shootCounter = randomM.NextFloat(2f, 4f);
                 float3 newDir = randomM.NextFloat3Direction() + alienShipData.direction;
                 newDir.z = 0;
                 newDir = math.normalize(newDir);

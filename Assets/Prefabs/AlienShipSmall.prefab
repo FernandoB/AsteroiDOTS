@@ -159,10 +159,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  size: 1
   direction:
     x: 0
     y: 0
     z: 0
+  changeDirectionCounter: 0
+  shootCounter: 0
 --- !u!114 &1085320710539759159
 MonoBehaviour:
   m_ObjectHideFlags: 0

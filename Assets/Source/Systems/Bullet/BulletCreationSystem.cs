@@ -24,7 +24,7 @@ public class BulletCreationSystem : SystemBase
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 
-        bulletsQuery = GetEntityQuery(ComponentType.ReadOnly<BulletData>());
+        bulletsQuery = GetEntityQuery(ComponentType.ReadOnly<BulletData>(), ComponentType.ReadOnly<PlayerBullet>());
     }
 
     protected override void OnStartRunning()
@@ -43,7 +43,7 @@ public class BulletCreationSystem : SystemBase
         if (!fire) return;
 
         int count = bulletsQuery.CalculateEntityCount();
-        if (count == 4) return;
+        if (count >= 4) return;
 
         EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
@@ -74,6 +74,7 @@ public class BulletCreationSystem : SystemBase
             pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
             pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
             pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
+            pw.AddComponent<PlayerBullet>(entityInQueryIndex, bullet);
 
         }).Schedule();
 

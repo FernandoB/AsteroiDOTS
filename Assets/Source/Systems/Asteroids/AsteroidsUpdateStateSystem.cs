@@ -117,7 +117,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
                 if (nextBigWave)
                 {
-                    waveAmountAsteroids += 1;
+                    waveAmountAsteroids += 2;
 
                     UpdateBigDisabled updateBigDisabled = new UpdateBigDisabled()
                     {

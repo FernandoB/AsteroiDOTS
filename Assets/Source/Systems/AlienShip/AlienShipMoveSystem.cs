@@ -75,14 +75,14 @@ public class AlienShipMoveSystem : SystemBase
                 alienShipData.shootCounter -= deltaTime;
                 if(alienShipData.shootCounter <= 0)
                 {
-                    alienShipData.shootCounter = 1f;
+                    alienShipData.shootCounter = random.NextFloat(2f, 4f);
 
                     Entity bullet = pw.Instantiate(entityInQueryIndex, bulletCapPrefab);
 
                     float3 deltaTargetPos = new float3(random.NextFloat(0f, 1f), random.NextFloat(0f, 1f), 0f);
                     deltaTargetPos.x *= random.NextBool() ? -1f : 1f;
                     deltaTargetPos.y *= random.NextBool() ? -1f : 1f;
-                    deltaTargetPos = math.normalize(deltaTargetPos) * random.NextFloat(2f, 5f);
+                    deltaTargetPos = math.normalize(deltaTargetPos) * random.NextFloat(3f, 6f);
 
                     float3 deltaVec;
                     if (playerActive)
@@ -100,7 +100,7 @@ public class AlienShipMoveSystem : SystemBase
                     bulletRotation.Value = quaternion.LookRotation(deltaVec, new float3(0f, 0f, 1f));
 
                     Translation bulletTranslation = new Translation();
-                    bulletTranslation.Value = translation.Value + (deltaVec * 1.6f);
+                    bulletTranslation.Value = translation.Value + (deltaVec * alienShipData.size);
 
                     BulletData bulletData = new BulletData();
                     bulletData.maxSpeed = bulletMaxSpeed;
