@@ -46,6 +46,12 @@ public class GameStateGameOverSystem : SystemBase
 
         }).ScheduleParallel();
 
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in PowerupDataCollectable player) =>
+        {
+            ecb.DestroyEntity(entityInQueryIndex, entity);
+
+        }).ScheduleParallel();
+
         Entities.ForEach((Entity entity, int entityInQueryIndex, in GameStateGameOver player) =>
         {
             ecb.RemoveComponent<GameStateGameOver>(entityInQueryIndex, entity);

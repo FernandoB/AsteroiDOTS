@@ -8,13 +8,7 @@ using UnityEngine;
 
 public class PowerupActivatorSystem : SystemBase
 {
-    private Entity alienShipBigEntity;
-    private AlienShipData alienShipBigData;
-
-    private Entity alienShipSmallEntity;
-    private AlienShipData alienShipSmallData;
-
-    private EntityQuery alienShipQuery;
+    private EntityQuery powerupQuery;
 
     private bool prevAllDisabled;
     private bool currentAllDisabled;
@@ -39,21 +33,15 @@ public class PowerupActivatorSystem : SystemBase
 
         EntityQueryDesc alienShipDesc = new EntityQueryDesc
         {
-            None = new ComponentType[] { ComponentType.ReadOnly<DisabledTag>() },
-            All = new ComponentType[] { ComponentType.ReadOnly<AlienShipData>() }
+            All = new ComponentType[] { ComponentType.ReadOnly<PowerupDataCollectable>() }
         };
-        alienShipQuery = GetEntityQuery(alienShipDesc);
+        powerupQuery = GetEntityQuery(alienShipDesc);
     }
 
     protected override void OnStartRunning()
     {
         prevAllDisabled = false;
         currentAllDisabled = false;
-
-        alienShipBigEntity = GetSingletonEntity<AlienShipBigTag>();
-        alienShipBigData = EntityManager.GetComponentData<AlienShipData>(alienShipBigEntity);
-        alienShipSmallEntity = GetSingletonEntity<AlienShipSmallTag>();
-        alienShipSmallData = EntityManager.GetComponentData<AlienShipData>(alienShipSmallEntity);
 
         uint randomSeed = (uint)(float)(baseTime + Time.ElapsedTime * 100);
         randomM.InitState(randomSeed);
@@ -66,11 +54,11 @@ public class PowerupActivatorSystem : SystemBase
         EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();
 
         prevAllDisabled = currentAllDisabled;
-        currentAllDisabled = alienShipQuery.IsEmpty;
+        currentAllDisabled = powerupQuery.IsEmpty;
 
         if (currentAllDisabled && !prevAllDisabled)
         {
-            timeCounter = randomM.NextFloat(10f, 20f);
+            timeCounter = randomM.NextFloat(0f, 1f);
             running = true;
         }
         else if (prevAllDisabled && !currentAllDisabled)
@@ -79,40 +67,24 @@ public class PowerupActivatorSystem : SystemBase
 
         if (running)
         {
+            PrefabsEntitiesReferences entitiesPrefabs = GetSingleton<PrefabsEntitiesReferences>();
+
             timeCounter -= Time.DeltaTime;
 
             if (timeCounter <= 0)
             {
                 running = false;
 
-                bool select = randomM.NextBool();
+                Entity entityPowerup = ecb.Instantiate(entitiesPrefabs.powerUpShieldEntityPrefab);
 
-                Entity alienShipEntity;
-                AlienShipData alienShipData;
+                float3 startPos = randomM.NextBool() ? Utils.GetRandomPosArea(ref randomM, 50f, 60f, 0f, 10f) : Utils.GetRandomPosArea(ref randomM, 0f, 15f, 50f, 60f);
+                ecb.SetComponent<Translation>(entityPowerup, new Translation() { Value = startPos });
 
-                if (select)
-                {
-                    alienShipEntity = alienShipBigEntity;
-                    alienShipData = alienShipBigData;
-                }
-                else
-                {
-                    alienShipEntity = alienShipSmallEntity;
-                    alienShipData = alienShipSmallData;
-                }
-
-                randomM.InitState((uint)(float)(baseTime + Time.ElapsedTime * 100));
-                alienShipData.changeDirectionCounter = randomM.NextFloat(2f, 5f);
-                alienShipData.shootCounter = randomM.NextFloat(2f, 4f);
-                float3 newDir = randomM.NextFloat3Direction() + alienShipData.direction;
+                float3 newDir = randomM.NextFloat3Direction();
                 newDir.z = 0;
                 newDir = math.normalize(newDir);
-                alienShipData.direction = newDir;
-                float3 startPos = randomM.NextBool() ? Utils.GetRandomPosArea(ref randomM, 50f, 60f, 0f, 10f) : Utils.GetRandomPosArea(ref randomM, 0f, 15f, 50f, 60f);
 
-                ecb.SetComponent<Translation>(alienShipEntity, new Translation() { Value = startPos });
-                ecb.SetComponent<AlienShipData>(alienShipEntity, alienShipData);
-                ecb.RemoveComponent<DisabledTag>(alienShipEntity);
+                ecb.SetComponent<PowerupDataCollectable>(entityPowerup, new PowerupDataCollectable() { direction = newDir, moveSpeed = 4f });
             }
         }
     }
