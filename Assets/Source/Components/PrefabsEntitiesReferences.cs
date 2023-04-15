@@ -19,4 +19,8 @@ public struct PrefabsEntitiesReferences : IComponentData
     public Entity alienShipBigEntityPrefab;
 
     public Entity alienShipSmallEntityPrefab;
+
+    public Entity powerUpShieldEntityPrefab;
+
+    public Entity powerupWeaponAEntityPrefab;
 }

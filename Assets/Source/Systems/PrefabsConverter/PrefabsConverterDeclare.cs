@@ -19,6 +19,8 @@ public class PrefabsConverterDeclare : GameObjectConversionSystem
             DeclareReferencedPrefab(prefabReference.bulletPrefab);
             DeclareReferencedPrefab(prefabReference.alienShipBigPrefab);
             DeclareReferencedPrefab(prefabReference.alienShipSmallPrefab);
+            DeclareReferencedPrefab(prefabReference.powerupShield);
+            DeclareReferencedPrefab(prefabReference.powerupWeaponA);
         });
     }
 }
