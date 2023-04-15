@@ -73,9 +73,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127534084596273930}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40e47ea6595bd4601b2d5afbcdd29421, type: 3}
+  m_Script: {fileID: 11500000, guid: b42f26b4e94634e6ea583efbfffc1ca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 3
+  direction:
+    x: 0
+    y: 0
+    z: 0
 --- !u!114 &1692318118634289976
 MonoBehaviour:
   m_ObjectHideFlags: 0

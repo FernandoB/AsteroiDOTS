@@ -26,16 +26,10 @@ public class PowerMoveSystem : SystemBase
         EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
         Entities
-            .WithAll<BulletData>()
-            .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref BulletData bulletData) =>
+            .WithAll<PowerupDataCollectable>()
+            .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PowerupDataCollectable bulletData) =>
             {
-                translation.Value = translation.Value + ((bulletData.startVelocity + (bulletData.direction * bulletData.maxSpeed)) * deltaTime);
-
-                bulletData.lifeTime -= deltaTime;
-                if (bulletData.lifeTime < 0f)
-                {
-                    pw.AddComponent<DeleteTag>(entityInQueryIndex, entity);
-                }
+                translation.Value = translation.Value + ((bulletData.direction * bulletData.moveSpeed) * deltaTime);
 
             }).ScheduleParallel();
 
