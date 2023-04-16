@@ -7,7 +7,7 @@ using Unity.Transforms;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
-public class CollidePlayerPowerupShieldCollectable : SystemCollideGeneric<PlayerData, PowerupShieldHit, PowerupShieldTag, DeleteTag>
+public class ColliderPlayerPowerupWeaponACollectable : SystemCollideGeneric<PlayerData, PowerupWeaponAHit, PowerupWeaponATag, DeleteTag>
 {
 
 }

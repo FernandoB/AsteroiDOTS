@@ -82,7 +82,18 @@ public class PowerupActivatorSystem : SystemBase
             {
                 running = false;
 
-                Entity entityPowerup = ecb.Instantiate(entitiesPrefabs.powerUpShieldEntityPrefab);
+                Entity entityPowerup;
+
+                bool select = true;
+
+                if (select)
+                {
+                    entityPowerup = ecb.Instantiate(entitiesPrefabs.powerupWeaponAEntityPrefab);
+                }
+                else
+                {
+                    entityPowerup = ecb.Instantiate(entitiesPrefabs.powerUpShieldEntityPrefab);
+                }
 
                 float3 startPos = randomM.NextBool() ? Utils.GetRandomPosArea(ref randomM, 50f, 60f, 0f, 10f) : Utils.GetRandomPosArea(ref randomM, 0f, 15f, 50f, 60f);
                 ecb.SetComponent<Translation>(entityPowerup, new Translation() { Value = startPos });

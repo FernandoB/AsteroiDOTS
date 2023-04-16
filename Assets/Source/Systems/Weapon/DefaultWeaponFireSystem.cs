@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public class BulletCreationSystem : SystemBase
+public class DefaultWeaponFireSystem : SystemBase
 {
     private Entity bulletPrefab;
 
@@ -53,6 +53,7 @@ public class BulletCreationSystem : SystemBase
         float lifeTime = bulletDataPrefab.lifeTime;
 
         Entities
+            .WithNone<PowerUpWeaponA>()
             .WithNone<DisabledTag>()
             .ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
         {
