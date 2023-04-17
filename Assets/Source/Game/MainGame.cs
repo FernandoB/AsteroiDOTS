@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainGame : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class MainGame : MonoBehaviour
 
     public GameObject gameStartText;
 
-    public Text scoreText;
+    public TextMeshProUGUI scoreText;
 
     public GameObject livesContainer;
 
