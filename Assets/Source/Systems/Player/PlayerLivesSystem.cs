@@ -67,6 +67,10 @@ public class PlayerLivesSystem : SystemBase
             {
                 player.lives += 1;
                 SetSingleton<PlayerData>(player);
+
+                EntityCommandBuffer ecb = beginSimulation_ecbs.CreateCommandBuffer();
+                Entity fxEntity = ecb.CreateEntity();
+                ecb.AddComponent<FXData>(fxEntity, new FXData() { fxId = FXEnum.AUDIO_EXTRA_LIFE });
             }
         }
 
@@ -127,9 +131,12 @@ public class PlayerLivesSystem : SystemBase
             pw.RemoveComponent<HitTag>(entityInQueryIndex, entity);
             pw.AddComponent<DisabledTag>(entityInQueryIndex, entity);            
 
+            Entity fxExpEntity = pw.CreateEntity(entityInQueryIndex);
+            pw.AddComponent<FXData>(entityInQueryIndex, fxExpEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = translation.Value.x, posY = translation.Value.y });
+
             Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
-            pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = translation.Value.x, posY = translation.Value.y });
-            
+            pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_BIG });
+
             translation.Value = new float3(-outOfThisWorld, outOfThisWorld, 0);
 
             rotation.Value = quaternion.identity;

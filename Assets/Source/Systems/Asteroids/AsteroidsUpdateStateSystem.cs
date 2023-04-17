@@ -149,7 +149,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = pw,
             Asteroids = mediumDisabledEntities,
-            amountDivision = 2
+            amountDivision = 2,
+            fxId = 1
         };
 
         UpdateDivision updateMediumDivision = new UpdateDivision()
@@ -170,7 +171,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = pw,
             Asteroids = smallDisabledEntities,
-            amountDivision = 2
+            amountDivision = 2,
+            fxId = 2
         };
 
         UpdateDivision updateSmallDivision = new UpdateDivision()
@@ -191,7 +193,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = pw,
             Asteroids = noEntities,
-            amountDivision = 0
+            amountDivision = 0,
+            fxId = 3
         };
 
         Dependency = updateBigBulletHit.ScheduleParallel(bigBulletHitQuery, Dependency);
@@ -268,6 +271,8 @@ public class AsteroidsUpdateStateSystem : SystemBase
 
         public int amountDivision;
 
+        public int fxId;
+
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             NativeArray<AsteroidData> asteroids = chunk.GetNativeArray<AsteroidData>(AsteroidTypeHandle);
@@ -299,7 +304,23 @@ public class AsteroidsUpdateStateSystem : SystemBase
                     commandBuffer.AddComponent<AsteroidDivision>(i, Asteroids[count], division);
                     count++;
                 }
-            }            
+
+                if (fxId == 1)
+                {
+                    Entity fxEntity = commandBuffer.CreateEntity(i);
+                    commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_BIG });
+                }
+                else if (fxId == 2)
+                {
+                    Entity fxEntity = commandBuffer.CreateEntity(i);
+                    commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_MEDIUM });
+                }
+                else if (fxId == 3)
+                {
+                    Entity fxEntity = commandBuffer.CreateEntity(i);
+                    commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_SMALL });
+                }
+            }
         }
     }
 

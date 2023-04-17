@@ -19,6 +19,8 @@ public class MainGame : MonoBehaviour
 
     public GameObject livesContainer;
 
+    public AudioManager audioManager;
+
     private EntityManager entityManager;
 
     private bool gameRunning = false;
@@ -69,6 +71,8 @@ public class MainGame : MonoBehaviour
         gameStartText.SetActive(true);
 
         gameRunning = false;
+
+        audioManager.StopAll();
     }
 
     public void PlayerReadyToRes()
@@ -91,7 +95,7 @@ public class MainGame : MonoBehaviour
             for (int i = 0; i < deltaLives; i++)
             {
                 GameObject go = GameObject.Instantiate(livesPrefab);
-                go.transform.parent = livesContainer.transform;
+                go.transform.SetParent(livesContainer.transform);
                 livesElements.Add(go);
             }
         }
@@ -102,7 +106,7 @@ public class MainGame : MonoBehaviour
             {
                 GameObject go = livesElements[deltaLives - 1];
                 livesElements.Remove(go);
-                go.transform.parent = null;
+                go.transform.SetParent(null);
                 GameObject.Destroy(go);
             }
         }
@@ -115,11 +119,13 @@ public class MainGame : MonoBehaviour
 
     public void SetFX(FXEnum fxId, float posX, float posY)
     {
-        Debug.Log(" < SetFX > - fxId: " + fxId + ", posX: " + posX + ", posY: " + posY);
-
         if(fxId == FXEnum.EXPLOSION)
         {
             ExplosionFX(posX, posY);
+        }
+        else
+        {
+            audioManager.PlaySound(fxId);
         }
     }
 

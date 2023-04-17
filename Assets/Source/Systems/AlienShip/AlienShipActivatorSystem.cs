@@ -94,11 +94,17 @@ public class AlienShipActivatorSystem : SystemBase
                 {
                     alienShipEntity = alienShipBigEntity;
                     alienShipData = alienShipBigData;
+
+                    Entity fxEntity = ecb.CreateEntity();
+                    ecb.AddComponent<FXData>(fxEntity, new FXData() { fxId = FXEnum.AUDIO_LOOP_BIG });
                 }
                 else
                 {
                     alienShipEntity = alienShipSmallEntity;
                     alienShipData = alienShipSmallData;
+
+                    Entity fxEntity = ecb.CreateEntity();
+                    ecb.AddComponent<FXData>(fxEntity, new FXData() { fxId = FXEnum.AUDIO_LOOP_SMALL });
                 }
 
                 randomM.InitState((uint)(float)(baseTime + Time.ElapsedTime * 100));

@@ -117,6 +117,9 @@ public class WeaponAFireSystem : SystemBase
                 pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
                 pw.AddComponent<PlayerBullet>(entityInQueryIndex, bullet);
 
+                Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
+                pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_FIRE });
+
             }).Schedule();
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);

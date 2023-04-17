@@ -111,6 +111,9 @@ public class AlienShipMoveSystem : SystemBase
                     pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
                     pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
                     pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
+
+                    Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
+                    pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_FIRE });
                 }
 
                 translation.Value = translation.Value + (alienShipData.direction * alienShipData.speed * deltaTime);
@@ -131,6 +134,12 @@ public class AlienShipMoveSystem : SystemBase
                 translation.Value = t;
 
                 scoreCounter.scoreCount = scoreCounter.scoreCount + 1;
+
+                Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
+                pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_BIG });
+
+                Entity loopStopEntity = pw.CreateEntity(entityInQueryIndex);
+                pw.AddComponent<FXData>(entityInQueryIndex, loopStopEntity, new FXData() { fxId = FXEnum.AUDIO_STOP_LOOP });
 
             }).ScheduleParallel();
 

@@ -55,6 +55,9 @@ public class WeaponASystem : SystemBase
                 pw.RemoveComponent<PowerupWeaponAHit>(entityInQueryIndex, entity);
                 pw.AddComponent<PowerUpWeaponA>(entityInQueryIndex, entity, new PowerUpWeaponA() { timeCounter = 10f });
 
+                Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
+                pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_POWERUP_PICKUP });
+
             }).Schedule();
 
         Entities

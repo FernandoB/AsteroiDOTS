@@ -22,37 +22,43 @@ public class GameStateGameOverSystem : SystemBase
     {
         EntityCommandBuffer.ParallelWriter ecb = simulation_ecbs.CreateCommandBuffer().AsParallelWriter();
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in PlayerData player) =>
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in PlayerData ent) =>
         {      
             ecb.DestroyEntity(entityInQueryIndex, entity);
 
         }).ScheduleParallel();
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in AsteroidData player) =>
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in AsteroidData ent) =>
         {
             ecb.DestroyEntity(entityInQueryIndex, entity);
 
         }).ScheduleParallel();
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in BulletData player) =>
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in BulletData ent) =>
         {
             ecb.DestroyEntity(entityInQueryIndex, entity);
 
         }).ScheduleParallel();
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in AlienShipData player) =>
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in AlienShipData ent) =>
         {
             ecb.DestroyEntity(entityInQueryIndex, entity);
 
         }).ScheduleParallel();
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in PowerupDataCollectable player) =>
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in PowerupDataCollectable ent) =>
         {
             ecb.DestroyEntity(entityInQueryIndex, entity);
 
         }).ScheduleParallel();
 
-        Entities.ForEach((Entity entity, int entityInQueryIndex, in GameStateGameOver player) =>
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in FXData ent) =>
+        {
+            ecb.DestroyEntity(entityInQueryIndex, entity);
+
+        }).ScheduleParallel();
+
+        Entities.ForEach((Entity entity, int entityInQueryIndex, in GameStateGameOver ent) =>
         {
             ecb.RemoveComponent<GameStateGameOver>(entityInQueryIndex, entity);
             ecb.AddComponent<GameStateEnd>(entityInQueryIndex, entity);

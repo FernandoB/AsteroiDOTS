@@ -14,7 +14,6 @@ public class AsteroidsCreationSystem : SystemBase
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
-    private float counter = 1f;
 
     protected override void OnCreate()
     {

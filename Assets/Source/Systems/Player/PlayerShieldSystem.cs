@@ -59,6 +59,9 @@ public class PlayerShieldSystem : SystemBase
                 pw.RemoveComponent<PowerupShieldHit>(entityInQueryIndex, entity);
                 pw.AddComponent<PlayerShield>(entityInQueryIndex, entity, new PlayerShield() { shieldRef = shieldEntity } );
 
+                Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
+                pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_POWERUP_PICKUP });
+
             }).Schedule();
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
