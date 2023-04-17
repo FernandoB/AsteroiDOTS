@@ -12,6 +12,9 @@ public class PlayerHyperspaceSystem : SystemBase
 
     private BeginSimulationEntityCommandBufferSystem beginSimulation_ecbs;
 
+    private double baseTime = System.DateTime.Now.TimeOfDay.TotalSeconds;
+    private Unity.Mathematics.Random randomM;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -29,7 +32,11 @@ public class PlayerHyperspaceSystem : SystemBase
     protected override void OnUpdate()
     {
         EntityCommandBuffer.ParallelWriter pw = beginSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
-        
+
+        Unity.Mathematics.Random random = randomM;
+        double elapsedTime = Time.ElapsedTime;
+        double bTime = baseTime;
+
         float deltaTime = Time.DeltaTime;
 
         bool hyperspace = false;
@@ -73,10 +80,27 @@ public class PlayerHyperspaceSystem : SystemBase
 
                 if (hyper.timeCounter < 0)
                 {
+                    uint randomSeed = (uint)(float)(bTime + elapsedTime * 100);
+                    random.InitState(randomSeed);
+
                     pw.RemoveComponent<PlayerHyperspace>(entityInQueryIndex, entity);
                     pw.RemoveComponent<DisabledTag>(entityInQueryIndex, entity);
 
-                    float3 newPos = new float3(0f, 0f, 0f);
+                    if(random.NextFloat(0f, 6f) < 1f)
+                    {
+                        pw.AddComponent<HitTag>(entityInQueryIndex, entity);
+
+                        float3 newPosHit = Utils.GetRandomPosArea(ref random, 0f, 17.5f, 0f, 12f);
+
+                        translation.Value = newPosHit;
+                        rotation.Value = quaternion.identity;
+                        player.currentSpeed = 0f;
+                        player.direction = float3.zero;
+
+                        return;
+                    }
+
+                    float3 newPos = Utils.GetRandomPosArea(ref random, 0f, 17.5f, 0f, 12f);
 
                     Entity fxExpEntity = pw.CreateEntity(entityInQueryIndex);
                     pw.AddComponent<FXData>(entityInQueryIndex, fxExpEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = newPos.x, posY = newPos.y });
