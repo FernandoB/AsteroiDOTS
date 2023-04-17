@@ -84,7 +84,7 @@ public class PowerupActivatorSystem : SystemBase
 
                 Entity entityPowerup;
 
-                bool select = true;
+                bool select = false;
 
                 if (select)
                 {
