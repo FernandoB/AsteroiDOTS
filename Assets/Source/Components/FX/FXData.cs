@@ -14,6 +14,7 @@ public enum FXEnum
     AUDIO_STOP_LOOP,
     AUDIO_LOOP_BIG,
     AUDIO_LOOP_SMALL,
+    AUDIO_HYPERSPACE
 }
 
 public struct FXData : IComponentData

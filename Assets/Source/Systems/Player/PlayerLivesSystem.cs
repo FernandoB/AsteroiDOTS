@@ -92,6 +92,7 @@ public class PlayerLivesSystem : SystemBase
         Entities
             .WithAll<DisabledTag>()
             .WithNone<HitTag>()
+            .WithNone<PlayerHyperspace>()
             .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PlayerData player) =>
         {
 
@@ -126,6 +127,7 @@ public class PlayerLivesSystem : SystemBase
             .WithAll<HitTag>()
             .WithNone<PlayerShield>()
             .WithNone<DisabledTag>()
+            .WithNone<PlayerHyperspace>()
             .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PlayerData player, ref Rotation rotation) =>
         {
             pw.RemoveComponent<HitTag>(entityInQueryIndex, entity);
@@ -163,6 +165,7 @@ public class PlayerLivesSystem : SystemBase
         Entities
             .WithAll<PlayerData>()
             .WithAll<DisabledTag>()
+            .WithNone<PlayerHyperspace>()
             .ForEach((Entity entity, int entityInQueryIndex, in PlayerShield playerShield) =>
             {
                 pw.DestroyEntity(entityInQueryIndex, playerShield.shieldRef);

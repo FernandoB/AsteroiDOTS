@@ -64,6 +64,7 @@ public class WeaponASystem : SystemBase
             .WithAll<PlayerData>()
             .WithAll<PowerUpWeaponA>()
             .WithAll<DisabledTag>()
+            .WithNone<PlayerHyperspace>()
             .ForEach((Entity entity, int entityInQueryIndex) =>
             {
                 pw.RemoveComponent<PowerUpWeaponA>(entityInQueryIndex, entity);                

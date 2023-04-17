@@ -37,3 +37,6 @@ MonoBehaviour:
   - id: 9
     clip: {fileID: 8300000, guid: b9376b14ce5cf4ea1b425ed49536b1d9, type: 3}
     loop: 1
+  - id: 10
+    clip: {fileID: 8300000, guid: cffb86d6ead604234afff7d34c929ef3, type: 3}
+    loop: 0
