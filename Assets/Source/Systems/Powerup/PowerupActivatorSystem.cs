@@ -84,7 +84,7 @@ public class PowerupActivatorSystem : SystemBase
 
                 Entity entityPowerup;
 
-                bool select = false;
+                bool select = randomM.NextBool();
 
                 if (select)
                 {
