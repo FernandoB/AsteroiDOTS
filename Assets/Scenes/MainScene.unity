@@ -940,6 +940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   livesPrefab: {fileID: 4301015074469011318, guid: 84a71bafe6bcc49ba824bd05e3fecbc0, type: 3}
+  explosionAnim: {fileID: 6621178007504994799, guid: 9e36a147437bb4f50a06d6da105face1, type: 3}
   gameStartText: {fileID: 1237193357}
   scoreText: {fileID: 1078230542}
   livesContainer: {fileID: 531072562}

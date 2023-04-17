@@ -11,6 +11,8 @@ public class MainGame : MonoBehaviour
 
     public GameObject livesPrefab;
 
+    public GameObject explosionAnim;
+
     public GameObject gameStartText;
 
     public TextMeshProUGUI scoreText;
@@ -109,5 +111,14 @@ public class MainGame : MonoBehaviour
     public void SetScore(int score)
     {
         scoreText.text = "" + score;
+    }
+
+    private Vector3 explosionPos = Vector3.zero;
+    private Quaternion explosionRot = Quaternion.identity;
+    private void ExplosionFX(float x, float y)
+    {
+        explosionPos.x = x;
+        explosionPos.y = y;
+        GameObject.Instantiate(explosionAnim, explosionPos, explosionRot);
     }
 }
