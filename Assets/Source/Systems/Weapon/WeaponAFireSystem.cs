@@ -84,7 +84,7 @@ public class WeaponAFireSystem : SystemBase
                 bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
 
                 bulletTranslation = new Translation();
-                bulletTranslation.Value = translation.Value + (local2World.Right * 0.75f);
+                bulletTranslation.Value = translation.Value + (local2World.Right * 0.70f);
 
                 bulletData = new BulletData();
                 bulletData.maxSpeed = bulletMaxSpeed;
@@ -104,7 +104,7 @@ public class WeaponAFireSystem : SystemBase
                 bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
 
                 bulletTranslation = new Translation();
-                bulletTranslation.Value = translation.Value - (local2World.Right * 0.75f);
+                bulletTranslation.Value = translation.Value - (local2World.Right * 0.70f);
 
                 bulletData = new BulletData();
                 bulletData.maxSpeed = bulletMaxSpeed;

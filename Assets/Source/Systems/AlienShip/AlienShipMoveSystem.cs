@@ -111,6 +111,7 @@ public class AlienShipMoveSystem : SystemBase
                     pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
                     pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
                     pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
+                    pw.AddComponent<AlienShipBullet>(entityInQueryIndex, bullet);
 
                     Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
                     pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_FIRE });

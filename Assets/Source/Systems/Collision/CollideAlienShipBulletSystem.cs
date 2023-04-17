@@ -7,7 +7,7 @@ using Unity.Transforms;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
-public class CollideAlienShipBulletSystem : SystemCollideGeneric<AlienShipData, HitTag, BulletData, DeleteTag>
+public class CollideAlienShipBulletSystem : SystemCollideGeneric<AlienShipData, HitTag, PlayerBullet, DeleteTag>
 {
 
 }
