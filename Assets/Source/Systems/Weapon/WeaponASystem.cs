@@ -57,6 +57,16 @@ public class WeaponASystem : SystemBase
 
             }).Schedule();
 
+        Entities
+            .WithAll<PlayerData>()
+            .WithAll<PowerUpWeaponA>()
+            .WithAll<DisabledTag>()
+            .ForEach((Entity entity, int entityInQueryIndex) =>
+            {
+                pw.RemoveComponent<PowerUpWeaponA>(entityInQueryIndex, entity);                
+
+            }).Schedule();
+
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
     }
 }
