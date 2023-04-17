@@ -125,8 +125,11 @@ public class PlayerLivesSystem : SystemBase
             .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PlayerData player, ref Rotation rotation) =>
         {
             pw.RemoveComponent<HitTag>(entityInQueryIndex, entity);
-            pw.AddComponent<DisabledTag>(entityInQueryIndex, entity);
+            pw.AddComponent<DisabledTag>(entityInQueryIndex, entity);            
 
+            Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
+            pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = translation.Value.x, posY = translation.Value.y });
+            
             translation.Value = new float3(-outOfThisWorld, outOfThisWorld, 0);
 
             rotation.Value = quaternion.identity;

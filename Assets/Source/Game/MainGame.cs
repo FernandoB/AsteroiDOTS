@@ -113,6 +113,16 @@ public class MainGame : MonoBehaviour
         scoreText.text = "" + score;
     }
 
+    public void SetFX(FXEnum fxId, float posX, float posY)
+    {
+        Debug.Log(" < SetFX > - fxId: " + fxId + ", posX: " + posX + ", posY: " + posY);
+
+        if(fxId == FXEnum.EXPLOSION)
+        {
+            ExplosionFX(posX, posY);
+        }
+    }
+
     private Vector3 explosionPos = Vector3.zero;
     private Quaternion explosionRot = Quaternion.identity;
     private void ExplosionFX(float x, float y)
