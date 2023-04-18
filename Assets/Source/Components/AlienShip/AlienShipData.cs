@@ -11,6 +11,8 @@ public struct AlienShipData : IComponentData
     public float speed;
     [ReadOnly]
     public float size;
+    [ReadOnly]
+    public float rotationSpeed;
 
     public float3 direction;
     public float changeDirectionCounter;

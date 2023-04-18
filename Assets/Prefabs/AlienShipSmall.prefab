@@ -160,6 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   size: 1
+  rotationSpeed: 250
   direction:
     x: 0
     y: 0

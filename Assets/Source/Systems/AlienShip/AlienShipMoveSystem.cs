@@ -57,8 +57,8 @@ public class AlienShipMoveSystem : SystemBase
 
         Entities
             .WithNone<DisabledTag>()
-            .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref AlienShipData alienShipData) =>
-            {
+            .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref Rotation rotation, ref AlienShipData alienShipData) =>
+            {                
                 uint randomSeed = (uint)(float)(bTime + elapsedTime * 100);
                 random.InitState(randomSeed);
 
@@ -118,6 +118,7 @@ public class AlienShipMoveSystem : SystemBase
                 }
 
                 translation.Value = translation.Value + (alienShipData.direction * alienShipData.speed * deltaTime);
+                rotation.Value = math.mul(rotation.Value, quaternion.RotateZ(math.radians(alienShipData.rotationSpeed * deltaTime)));
 
             }).ScheduleParallel();
 
