@@ -10,7 +10,7 @@ using UnityEngine;
 [UpdateBefore(typeof(AsteroidsUpdateStateSystem))]
 public class WorldBoundsSystem : SystemBase
 {
-    private float offset = 0.5f;
+    private float offset = 1f;
 
     private Camera cam;
     private Vector3 camP;
