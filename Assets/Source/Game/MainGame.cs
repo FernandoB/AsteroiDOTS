@@ -23,6 +23,8 @@ public class MainGame : MonoBehaviour
 
     public CameraFollow cameraFollow;
 
+    public GameObject background;
+
     private EntityManager entityManager;
 
     private bool gameRunning = false;
@@ -44,6 +46,7 @@ public class MainGame : MonoBehaviour
     {
         livesElements = new List<GameObject>();
         gameStartText.SetActive(true);
+        background.SetActive(true);
     }
 
     void Update()
