@@ -21,6 +21,8 @@ public class MainGame : MonoBehaviour
 
     public AudioManager audioManager;
 
+    public CameraFollow cameraFollow;
+
     private EntityManager entityManager;
 
     private bool gameRunning = false;
@@ -28,6 +30,8 @@ public class MainGame : MonoBehaviour
     private int currentLives = 0;
 
     private List<GameObject> livesElements;
+
+    private bool playerDead = false;
 
 
     private void Awake()
@@ -50,6 +54,11 @@ public class MainGame : MonoBehaviour
             {
                 OnStartGame();
             }
+        }
+
+        if(playerDead)
+        {
+            SetPlayerPos(0f, 0f);
         }
     }
 
@@ -83,6 +92,8 @@ public class MainGame : MonoBehaviour
     public void PlayerRes()
     {
         gameStartText.SetActive(false);
+
+        playerDead = false;
     }
 
     public void SetPlayerLives(int lives)
@@ -109,6 +120,7 @@ public class MainGame : MonoBehaviour
                 go.transform.SetParent(null);
                 GameObject.Destroy(go);
             }
+            playerDead = true;            
         }
     }
 
@@ -136,5 +148,10 @@ public class MainGame : MonoBehaviour
         explosionPos.x = x;
         explosionPos.y = y;
         GameObject.Instantiate(explosionAnim, explosionPos, explosionRot);
+    }
+
+    public void SetPlayerPos(float posX, float posY)
+    {
+        cameraFollow.SetTargetPos(posX, posY);
     }
 }
