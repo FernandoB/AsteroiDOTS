@@ -56,11 +56,7 @@ public class PlayerHyperspaceSystem : SystemBase
                     pw.AddComponent<PlayerHyperspace>(entityInQueryIndex, entity, new PlayerHyperspace() { timeCounter = 1f });
                     pw.AddComponent<DisabledTag>(entityInQueryIndex, entity, new DisabledTag());
 
-                    Entity fxExpEntity = pw.CreateEntity(entityInQueryIndex);
-                    pw.AddComponent<FXData>(entityInQueryIndex, fxExpEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = translation.Value.x, posY = translation.Value.y });
-
-                    Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
-                    pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_HYPERSPACE });
+                    AddFX(ref pw, entityInQueryIndex, translation.Value.x, translation.Value.y);
 
                     translation.Value = new float3(-outOfThisWorld, outOfThisWorld, 0);
                     rotation.Value = quaternion.identity;
@@ -102,11 +98,7 @@ public class PlayerHyperspaceSystem : SystemBase
 
                     float3 newPos = Utils.GetRandomPosArea(ref random, 0f, 17.5f, 0f, 12f);
 
-                    Entity fxExpEntity = pw.CreateEntity(entityInQueryIndex);
-                    pw.AddComponent<FXData>(entityInQueryIndex, fxExpEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = newPos.x, posY = newPos.y });
-
-                    Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
-                    pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_HYPERSPACE });
+                    AddFX(ref pw, entityInQueryIndex, newPos.x, newPos.y);
 
                     translation.Value = newPos;
                     rotation.Value = quaternion.identity;
@@ -117,5 +109,14 @@ public class PlayerHyperspaceSystem : SystemBase
             }).Schedule();
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
+    }
+
+    private static void AddFX(ref EntityCommandBuffer.ParallelWriter pw, int index, float posX, float posY)
+    {
+        Entity fxExpEntity = pw.CreateEntity(index);
+        pw.AddComponent<FXData>(index, fxExpEntity, new FXData() { fxId = FXEnum.EXPLOSION, posX = posX, posY = posY });
+
+        Entity fxEntity = pw.CreateEntity(index);
+        pw.AddComponent<FXData>(index, fxEntity, new FXData() { fxId = FXEnum.AUDIO_HYPERSPACE });
     }
 }

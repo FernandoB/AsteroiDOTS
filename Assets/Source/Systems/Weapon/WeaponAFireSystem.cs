@@ -55,67 +55,14 @@ public class WeaponAFireSystem : SystemBase
         Entities
             .WithAll<PowerUpWeaponA>()
             .WithNone<DisabledTag>()
-            .ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
+            .ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in LocalToWorld local2World) =>
             {
 
-                Entity bullet = pw.Instantiate(entityInQueryIndex, prefab);
+                SetBullet(ref prefab, bulletMaxSpeed, lifeTime, local2World.Up * player.size, ref pw, entityInQueryIndex, in player, in translation, in local2World);
 
-                Rotation bulletRotation = new Rotation();
-                bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
+                SetBullet(ref prefab, bulletMaxSpeed, lifeTime, local2World.Right * 0.70f, ref pw, entityInQueryIndex, in player, in translation, in local2World);
 
-                Translation bulletTranslation = new Translation();
-                bulletTranslation.Value = translation.Value + (local2World.Up * player.size);
-
-                BulletData bulletData = new BulletData();
-                bulletData.maxSpeed = bulletMaxSpeed;
-                bulletData.lifeTime = lifeTime;
-                bulletData.startVelocity = math.project(player.direction, local2World.Up);
-                bulletData.direction = local2World.Up;
-
-                pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
-                pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
-                pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
-                pw.AddComponent<PlayerBullet>(entityInQueryIndex, bullet);
-
-                // right
-                bullet = pw.Instantiate(entityInQueryIndex, prefab);
-
-                bulletRotation = new Rotation();
-                bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
-
-                bulletTranslation = new Translation();
-                bulletTranslation.Value = translation.Value + (local2World.Right * 0.70f);
-
-                bulletData = new BulletData();
-                bulletData.maxSpeed = bulletMaxSpeed;
-                bulletData.lifeTime = lifeTime;
-                bulletData.startVelocity = math.project(player.direction, local2World.Up);
-                bulletData.direction = local2World.Up;
-
-                pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
-                pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
-                pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
-                pw.AddComponent<PlayerBullet>(entityInQueryIndex, bullet);
-
-                // left
-                bullet = pw.Instantiate(entityInQueryIndex, prefab);
-
-                bulletRotation = new Rotation();
-                bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
-
-                bulletTranslation = new Translation();
-                bulletTranslation.Value = translation.Value - (local2World.Right * 0.70f);
-
-                bulletData = new BulletData();
-                bulletData.maxSpeed = bulletMaxSpeed;
-                bulletData.lifeTime = lifeTime;
-                bulletData.startVelocity = math.project(player.direction, local2World.Up);
-                bulletData.direction = local2World.Up;
-
-                pw.SetComponent<Translation>(entityInQueryIndex, bullet, bulletTranslation);
-                pw.SetComponent<Rotation>(entityInQueryIndex, bullet, bulletRotation);
-                pw.SetComponent<BulletData>(entityInQueryIndex, bullet, bulletData);
-                pw.AddComponent<PlayerBullet>(entityInQueryIndex, bullet);
+                SetBullet(ref prefab, bulletMaxSpeed, lifeTime, local2World.Right * -0.70f, ref pw, entityInQueryIndex, in player, in translation, in local2World);
 
                 Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
                 pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_FIRE });
@@ -123,5 +70,35 @@ public class WeaponAFireSystem : SystemBase
             }).Schedule();
 
         beginSimulation_ecbs.AddJobHandleForProducer(Dependency);
+    }
+
+    private static void SetBullet(  ref Entity prefab,
+                                    float bulletMaxSpeed,
+                                    float lifeTime,
+                                    float3 posDelta,
+                                    ref EntityCommandBuffer.ParallelWriter pw,
+                                    int index,                                    
+                                    in PlayerData player,
+                                    in Translation translation,
+                                    in LocalToWorld local2World)
+    {
+        Entity bullet = pw.Instantiate(index, prefab);
+
+        Rotation bulletRotation = new Rotation();
+        bulletRotation.Value = quaternion.LookRotation(local2World.Up, new float3(0f, 0f, 1f));
+
+        Translation bulletTranslation = new Translation();
+        bulletTranslation.Value = translation.Value + posDelta;
+
+        BulletData bulletData = new BulletData();
+        bulletData.maxSpeed = bulletMaxSpeed;
+        bulletData.lifeTime = lifeTime;
+        bulletData.startVelocity = math.project(player.direction, local2World.Up);
+        bulletData.direction = local2World.Up;
+
+        pw.SetComponent<Translation>(index, bullet, bulletTranslation);
+        pw.SetComponent<Rotation>(index, bullet, bulletRotation);
+        pw.SetComponent<BulletData>(index, bullet, bulletData);
+        pw.AddComponent<PlayerBullet>(index, bullet);
     }
 }
