@@ -24,14 +24,14 @@ public class PlayerControllerSystem : SystemBase
 
         if(Input.GetKey(KeyCode.W))
         {
-            vIn += 1f * Time.DeltaTime;
+            vIn += Time.DeltaTime;
             if(vIn > 1f)
             {
                 vIn = 1f;
             }
         }
         else {
-            vIn = 0f;
+            vIn = -1f;
         }
 
         Entities
@@ -49,6 +49,10 @@ public class PlayerControllerSystem : SystemBase
                 {
                     player.direction = math.normalize(player.direction) * player.maxSpeed;
                 }
+            }
+            else
+            {
+                player.direction = player.direction * 0.99f;
             }
 
             translation.Value = translation.Value + (player.direction * deltaTime);
