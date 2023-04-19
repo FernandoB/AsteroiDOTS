@@ -20,7 +20,7 @@ public class WeaponAFireSystem : SystemBase
     {
         base.OnCreate();
 
-        RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
+        RequireForUpdate(GetEntityQuery(typeof(PowerUpWeaponA)));
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 

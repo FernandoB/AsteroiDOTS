@@ -42,6 +42,7 @@ public class WeaponASystem : SystemBase
                 if (weapon.timeCounter <= 0f)
                 {
                     pw.RemoveComponent<PowerUpWeaponA>(entityInQueryIndex, entity);
+                    pw.AddComponent<DefaultWeapon>(entityInQueryIndex, entity);
                 }
 
             }).Schedule();
@@ -55,6 +56,8 @@ public class WeaponASystem : SystemBase
                 pw.RemoveComponent<PowerupWeaponAHit>(entityInQueryIndex, entity);
                 pw.AddComponent<PowerUpWeaponA>(entityInQueryIndex, entity, new PowerUpWeaponA() { timeCounter = 10f });
 
+                pw.RemoveComponent<DefaultWeapon>(entityInQueryIndex, entity);
+
                 Entity fxEntity = pw.CreateEntity(entityInQueryIndex);
                 pw.AddComponent<FXData>(entityInQueryIndex, fxEntity, new FXData() { fxId = FXEnum.AUDIO_POWERUP_PICKUP });
 
@@ -67,7 +70,8 @@ public class WeaponASystem : SystemBase
             .WithNone<PlayerHyperspace>()
             .ForEach((Entity entity, int entityInQueryIndex) =>
             {
-                pw.RemoveComponent<PowerUpWeaponA>(entityInQueryIndex, entity);                
+                pw.RemoveComponent<PowerUpWeaponA>(entityInQueryIndex, entity);
+                pw.AddComponent<DefaultWeapon>(entityInQueryIndex, entity);
 
             }).Schedule();
 

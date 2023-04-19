@@ -20,7 +20,7 @@ public class DefaultWeaponFireSystem : SystemBase
     {
         base.OnCreate();
 
-        RequireForUpdate(GetEntityQuery(typeof(GameStateRunning)));
+        RequireForUpdate(GetEntityQuery(typeof(DefaultWeapon)));
 
         beginSimulation_ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 
@@ -53,7 +53,6 @@ public class DefaultWeaponFireSystem : SystemBase
         float lifeTime = bulletDataPrefab.lifeTime;
 
         Entities
-            .WithNone<PowerUpWeaponA>()
             .WithNone<DisabledTag>()
             .ForEach((Entity entity, int entityInQueryIndex, in PlayerData player, in Translation translation, in Rotation rotation, in LocalToWorld local2World) =>
         {
