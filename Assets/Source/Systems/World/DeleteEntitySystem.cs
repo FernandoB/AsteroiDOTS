@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class DeleteEntitySystem : SystemBase
 {
-    private EndSimulationEntityCommandBufferSystem endSimulation_ecbs;
+    private BeginSimulationEntityCommandBufferSystem ecbs;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        endSimulation_ecbs = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        ecbs = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
     }
 
     protected override void OnUpdate()
     {
-        EntityCommandBuffer.ParallelWriter pw = endSimulation_ecbs.CreateCommandBuffer().AsParallelWriter();
+        EntityCommandBuffer.ParallelWriter pw = ecbs.CreateCommandBuffer().AsParallelWriter();
 
         Entities
             .WithAll<DeleteTag>()
@@ -25,6 +25,6 @@ public class DeleteEntitySystem : SystemBase
             }
             ).ScheduleParallel();
 
-        endSimulation_ecbs.AddJobHandleForProducer(this.Dependency);
+        ecbs.AddJobHandleForProducer(this.Dependency);
     }
 }
