@@ -149,8 +149,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = pw,
             Asteroids = mediumDisabledEntities,
-            amountDivision = 2,
-            fxId = 1
+            amountDivision = 2
         };
 
         UpdateDivision updateMediumDivision = new UpdateDivision()
@@ -171,8 +170,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = pw,
             Asteroids = smallDisabledEntities,
-            amountDivision = 2,
-            fxId = 2
+            amountDivision = 2
         };
 
         UpdateDivision updateSmallDivision = new UpdateDivision()
@@ -193,8 +191,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
             AsteroidTypeHandle = GetComponentTypeHandle<AsteroidData>(true),
             commandBuffer = pw,
             Asteroids = noEntities,
-            amountDivision = 0,
-            fxId = 3
+            amountDivision = 0
         };
 
         Dependency = updateBigBulletHit.ScheduleParallel(bigBulletHitQuery, Dependency);
@@ -251,6 +248,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
                 asteroidData.direction = dir;
                 asteroidData.speed = random.NextFloat(2f, 6f);
                 asteroidData.entity = asteroids[i].entity;
+                asteroidData.hitFx = asteroids[i].hitFx;
                 commandBuffer.SetComponent<AsteroidData>(i, asteroids[i].entity, asteroidData);
                 commandBuffer.RemoveComponent<DisabledTag>(i, asteroids[i].entity);
             }
@@ -270,8 +268,6 @@ public class AsteroidsUpdateStateSystem : SystemBase
         public NativeArray<Entity> Asteroids;
 
         public int amountDivision;
-
-        public int fxId;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
@@ -305,21 +301,9 @@ public class AsteroidsUpdateStateSystem : SystemBase
                     count++;
                 }
 
-                if (fxId == 1)
-                {
-                    Entity fxEntity = commandBuffer.CreateEntity(i);
-                    commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_BIG });
-                }
-                else if (fxId == 2)
-                {
-                    Entity fxEntity = commandBuffer.CreateEntity(i);
-                    commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_MEDIUM });
-                }
-                else if (fxId == 3)
-                {
-                    Entity fxEntity = commandBuffer.CreateEntity(i);
-                    commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = FXEnum.AUDIO_ASTEROID_SMALL });
-                }
+                Entity fxEntity = commandBuffer.CreateEntity(i);
+                commandBuffer.AddComponent<FXData>(i, fxEntity, new FXData() { fxId = asteroids[i].hitFx });
+
             }
         }
     }
@@ -356,6 +340,7 @@ public class AsteroidsUpdateStateSystem : SystemBase
                 asteroidData.direction = dir;
                 asteroidData.speed = random.NextFloat(3f, 7f);
                 asteroidData.entity = asteroids[i].entity;
+                asteroidData.hitFx = asteroids[i].hitFx;
                 commandBuffer.SetComponent<AsteroidData>(i, asteroids[i].entity, asteroidData);
                 commandBuffer.RemoveComponent<DisabledTag>(i, asteroids[i].entity);
                 commandBuffer.RemoveComponent<AsteroidDivision>(i, asteroids[i].entity);

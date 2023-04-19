@@ -37,11 +37,15 @@ public class AsteroidsCreationSystem : SystemBase
 
         float3 startPos = new float3(outOfThisWorld, outOfThisWorld, 0);
 
+        AsteroidData bigAsteroidData = GetComponent<AsteroidData>(entitiesPrefabs.asteroidBigEntityPrefab);
+        AsteroidData mediumAsteroidData = GetComponent<AsteroidData>(entitiesPrefabs.asteroidMediumEntityPrefab);
+        AsteroidData smallAsteroidData = GetComponent<AsteroidData>(entitiesPrefabs.asteroidSmallEntityPrefab);
+
         for (int i = 0; i < maxBigAsteroids; i++)
         {
             Entity e = ecb.Instantiate(entitiesPrefabs.asteroidBigEntityPrefab);
             ecb.SetComponent<Translation>(e, new Translation() { Value = startPos } );
-            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
+            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e , hitFx = bigAsteroidData.hitFx });
             ecb.AddComponent<DisabledTag>(e);
             ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 , score = 25 });
         }
@@ -50,7 +54,7 @@ public class AsteroidsCreationSystem : SystemBase
         {
             Entity e = ecb.Instantiate(entitiesPrefabs.asteroidMediumEntityPrefab);
             ecb.SetComponent<Translation>(e, new Translation() { Value = startPos });
-            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
+            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e, hitFx = mediumAsteroidData.hitFx });
             ecb.AddComponent<DisabledTag>(e);
             ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 , score = 50 });
         }
@@ -59,7 +63,7 @@ public class AsteroidsCreationSystem : SystemBase
         {
             Entity e = ecb.Instantiate(entitiesPrefabs.asteroidSmallEntityPrefab);
             ecb.SetComponent<Translation>(e, new Translation() { Value = startPos });
-            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e });
+            ecb.SetComponent<AsteroidData>(e, new AsteroidData() { entity = e, hitFx = smallAsteroidData.hitFx });
             ecb.AddComponent<DisabledTag>(e);
             ecb.AddComponent<ScoreCounterData>(e, new ScoreCounterData() { scoreCount = 0 , score = 100 });
         }

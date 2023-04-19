@@ -9,4 +9,6 @@ public struct AsteroidData : IComponentData
     public Entity entity;
     public float speed;
     public float3 direction;
+
+    public FXEnum hitFx;
 }

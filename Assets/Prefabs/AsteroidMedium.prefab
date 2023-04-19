@@ -53,6 +53,7 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+  hitFx: 3
 --- !u!135 &8071348025264258673
 SphereCollider:
   m_ObjectHideFlags: 0
