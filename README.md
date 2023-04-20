@@ -23,4 +23,21 @@ Asteroids like game developed in Unity DOTS
   - Space to fire the current weapon
   - H for hyperspace
 
+### Project
+
+  - The source code is located in the Source folder and is divided into three subfolders: 
+    - Game
+    - Components
+    - Systems
+  - The Game folder is the GameObject part of the game. There is the MainGame class that handles the GameStart and GameEnd states, the UI, and visual and sound fx.
+  - Components and Systems folders are the ECS part. Each one has the following subfolders which in turn contain the code for each relevant part of the game:
+    - Player
+    - Weapon
+    - Asteroids
+    - AlienShip
+    - Powerups
+    - Score
+    - GameState
+    - FX 
+
 
